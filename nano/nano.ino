@@ -10,13 +10,14 @@
 #define greenpin  9
 
 #define NUM_LEDS   28
-#define BRIGHTNESS  225
+#define BRIGHTNESS  10
 #define METO_SIZE 8 
 
 int brightness = 0;    // how bright the LED is
 int fadeAmount = 1; 
+char c;
+int value= 255;
 
-String data = ""
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, leddatapin, NEO_GRB + NEO_KHZ800);
 
@@ -53,22 +54,32 @@ else {
   gg = 0x00;
   bb = 0x00;  
 
-}                                                                   // meteorRain( rr, gg, bb, METO_SIZE, random(60,150), true, 50);
+}           
+  
+  //meteorRain( rr, gg, bb, METO_SIZE, random(60,150), true, 50);
+  communication();
                                                                      // meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTrailDecay, boolean meteorRandomDecay, int SpeedDelay)
   
- color_strip(255,255,0,brightness);
+ //color_strip(255,255,0,255);
 }
 
 
 
-void communication(){ 
-  String c = "" 
-  while(Serial.available>0){
-    delay(10):
-    
-    try{
-        String  c = Serial.readString();
+void communication(){                 //currently some testing. 
+  
+  if(Serial.available()>0){
+
+      value = Serial.parseInt();
+      c = Serial.read();
+
+    if(c == 'G'){
+     color_strip(255,255,0,value);
     }
+    if(c == 'L'){
+      color_strip(255,0,255,value);
+    }
+    Serial.print(c);
+    
     
     
     
