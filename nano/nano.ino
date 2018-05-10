@@ -43,25 +43,6 @@ void setup() {
 
 void loop() {
 
-
-
-
-  //int zz = random(1,6);
-  //                                                  //Serial.println(zz);
-  //                                                //change rgb hex values for different color random meteor
-  //if( zz != 5){
-  //  rr = 0xff;
-  //  gg = 0xff;
-  //  bb = 0xff;
-  //}
-  //else {
-  //  rr = 0xff;
-  //  gg = 0x00;
-  //  bb = 0x00;
-  //
-  //}
-
-
   communication();
   //   color_strip(255,255,0,255);
  
