@@ -49,7 +49,7 @@ void setup()
 void draw() {                   
 
 
-  setcolorRED(Nano1);
+  setauto(Nano1);
   delay(1500);
   setcolorBLUE(Nano1);
     delay(1500);
@@ -72,4 +72,7 @@ void setcolorBLUE(Serial Arduino){
 }
 void setcolorGREEN(Serial Arduino){
     Arduino.write("G"); 
+}
+void setauto(Serial Arduino){
+   Arduino.write("A"); 
 }
