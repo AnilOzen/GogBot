@@ -18,10 +18,11 @@ byte rr = 0xff;
 byte gg = 0xff;
 byte bb = 0xff;
 
-int fadeAmount = 1;
+int fadeAmount;
 char c;
-int value = 255;
-int green;
+
+int a_RED;
+int a_BLUE;
 
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, leddatapin, NEO_GRB + NEO_KHZ800);
@@ -99,6 +100,25 @@ void color_rgbstrip() {
   analogWrite(greenpin, 255);
 }
 
+void color_angry(){
+  fadeAmount++;
+  
+  a_BLUE += (fadeAmount*random(0.05,2));
+  a_RED += (fadeAmount*random(0.05,2));
+
+ if( a_BLUE<0 || a_BLUE >255){
+  fadeAmount*-1;
+ }
+ if(a_RED <= 0 || a_RED>=255){
+ 
+  fadeAmount*-1;
+ }
+ 
+ analogWrite(redpin, a_RED);
+ analogWrite(bluepin, a_BLUE);
+
+  
+}
 
 
 
