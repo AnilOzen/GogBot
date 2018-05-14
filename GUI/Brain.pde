@@ -1,14 +1,12 @@
 class Brain {
   PVector loc;
-  int n;
   int state = 0;
   int emotion;
-  int[] colors= {120,50,0,235,285};
+  int[] colors= {120,50,0,235,285}; // Hue color values
 
-  Brain(float x_, float y_, int n_) {
+  Brain(float x_, float y_, int emotion_) {
     loc=new PVector(x_,y_);
-    n=n_;
-    emotion=n+1;
+    emotion=emotion_+1;
   }
   
   void run(){
