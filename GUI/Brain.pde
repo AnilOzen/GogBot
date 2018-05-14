@@ -1,14 +1,27 @@
+import processing.serial.*;
+
 class Brain {
   PVector loc;
   int state = 0;
   int emotion;
   int serialPort;
+  Serial arduino_LED;    
   int[] colors= {120,50,0,235,285}; // Hue color values
 
-  Brain(float x_, float y_, int emotion_, int serialPort_) {
+  Brain(float x_, float y_, int emotion_, Serial arduino_) {
     loc=new PVector(x_,y_);
     emotion=emotion_+1;
-    serialPort = serialPort_;
+    arduino_LED = arduino_;
+  }
+  
+  void updateEmotion(int newEmotion)
+  {
+    emotion = newEmotion; 
+  }
+   
+  void sendEmotionToArduino()
+  {
+    arduino_LED.write(emotion);
   }
   
   void run(){
