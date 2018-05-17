@@ -1,6 +1,18 @@
-//This code is for the Arduino button board.
+/*
+  Arduino_button_board
 
-//test
+  The code will function for the main buttonboard for the Gogbot installation.
+
+  The circuit:
+    Addresable led ring 24-bit
+    6 buttons
+
+  Jan-paul Konijn
+  17-5-2018
+
+
+*/
+
 
 #include <Adafruit_NeoPixel.h>
 
@@ -10,15 +22,17 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 int buttonpins[] = {2, 4, 7, 8, 12, 13};
-int buttonvalues[6] = {};
-char headers[] = {'X', 'Y', 'Z', 'U', 'V', 'Q'};
+int buttonvalues[7] = {};
+char headers[] = {'X', 'Y', 'Z', 'U', 'V', 'Q', 'C'};
 int lightlocations[] = {0, 5, 10, 14, 19};
 int interval = 500;
 int long previousm;
 int fadeAmount;
-boolean checkpressed = true;
+boolean checkpressed = false;
 char command;
+uint32_t d;
 
+  
 void setup() {
 
   for (int i = 0; i < 6; i++) {
@@ -32,10 +46,10 @@ void setup() {
 }
 
 void loop() {
-
+  buttonlightanimation(3);
   //buttonlightanimation();
-  // readvalues();
-  //datasender();
+  readvalues();
+  datasender();
   communication();
 
   //  delay(1000);
@@ -47,24 +61,26 @@ void loop() {
 
 
 
-void communication() {                //currently some testing.
+void communication() {
+
 
   while (Serial.available() > 0) {
 
     int value = Serial.parseInt();
     char command = Serial.read();
-
+    
     if (command == 'R') {
       readvalues();
-     // buttonlight(255);
-     buttonlightanimation(255);
-      //datasender();
+      buttonlightanimation(value);
     }
     if (command == 'G') {
+      checkpressed = false;
+      buttonlight(value);
     }
 
   }
 }
+
 void readvalues() {
   for ( int i = 0; i < 6; i++) {
     buttonvalues[i] = digitalRead(buttonpins[i]);
@@ -76,7 +92,7 @@ void readvalues() {
 void datasender() {
   if (millis() - previousm > interval) {
     previousm = millis();
-    for (int z = 0; z < 6; z++) {
+    for (int z = 0; z < 7; z++) {
       Serial.print(headers[z]);
       Serial.println(buttonvalues[z]);
     }
@@ -95,29 +111,53 @@ void color_strip(byte red, byte green, byte blue, int brightness) {
   strip.show();
 }
 
-
-void buttonlightanimation(int value) {
-  strip.setBrightness(value);
-
-  if ( buttonvalues[5] == 1 && checkpressed) {
-    for (int i = 0; i < 5; i++) {
-      strip.setPixelColor(lightlocations[i], Wheel(((i * 256 / 5) + i) & 255));
-      strip.show();
-    }
-
-    delay(1000);
-    rainbow(1000);
-    fadeAmount++;
-    color_strip(255, 255, 255, 255);
-    checkpressed = false;
-    //    if ( fadeAmount < 0 || fadeAmount> 255) {
-    //    fadeAmount * -1;
-    //    }
+void color_stripBYTE(uint32_t x) {
+  for (int i = 0; i < PIXEL_COUNT;  i++) {
+    strip.setBrightness(255);
+    strip.setPixelColor(i, x);
 
   }
-
-
+  strip.show();
 }
+
+
+
+void buttonlightanimation(int value) {
+  strip.setBrightness(255);
+  
+  if (value == 1) {
+    d = strip.Color(255, 0, 0);
+  } else if (value == 2) {
+    d = strip.Color(0, 255, 0);
+  } else {
+    d = strip.Color(255, 255,255);
+  }
+
+  if (buttonvalues[5] == 1) {
+    checkpressed = true;
+
+
+
+    if (checkpressed) {
+      buttonlight(255);
+      delay(500);
+      rainbow(1000);
+      
+      color_stripBYTE(d);
+      buttonvalues[6] = 1;
+    
+    }
+    else {
+      for (int i = 0; i, strip.numPixels(); i++) {
+        strip.setPixelColor(i, 255, 0, 0);
+      }
+      strip.show();
+    }
+  }
+}
+
+
+
 
 
 
