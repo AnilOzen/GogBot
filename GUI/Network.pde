@@ -11,7 +11,7 @@ class Network {
   int totalBrains = 5;
   Serial bPort;
 
-  int[][] results = {
+  int[][] results = { // Emotion table
     {1, 4, 3, 1, 5}, 
     {4, 2, 2, 2, 4}, 
     {3, 2, 3, 3, 1}, 
