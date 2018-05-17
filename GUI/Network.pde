@@ -1,5 +1,5 @@
 /*
-1=Happy
+ 1=Happy
  2=Sad
  3=Angry
  4=Neutral
@@ -20,7 +20,7 @@ class Network {
   Network(ArrayList<Serial> ports_) {
     // Add new brains
     //for (int i=0; i<totalBrains; i++) brains.add(new Brain(300*cos(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), 300*sin(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), i%5,ports_.get(i)));
-    for (int i=0; i<totalBrains; i++) brains.add(new Brain(300*cos(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), 300*sin(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), i%5,null)); // send null for testing
+    for (int i=0; i<totalBrains; i++) brains.add(new Brain(300*cos(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), 300*sin(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), i%5, null)); // send null for testing
   }
 
   void run() {
@@ -50,12 +50,15 @@ class Network {
     fill(255, 0, 0);
     if (total==3) fill(0, 255, 0);
     ellipse(width/2-100, -height/2+100, 70, 70);
+    fill(255);
+    text(getTotalPoints(), -width/2+100, -height/2+100);
   }
 
   void mousePress() {
     // Count the number of selected brains
     int total = 0;
     for (Brain b : brains) if (b.state==1) total++;
+    
     // Connect the brains, limit the maximum selected brains to 3
     for (Brain b : brains) if (dist(mouseX-width/2, mouseY-height/2, b.loc.x, b.loc.y)<30) b.state = (total<3) ? (b.state+1) %2 : 0;
 
@@ -88,5 +91,17 @@ class Network {
 
     // Disable all of the connections
     for (Brain brain : brains) brain.state=0;
+  }
+
+  int getTotalPoints() {
+    int totalPoints=0;
+    for (Brain b : brains) {
+      if (b.emotion==1) totalPoints+=2; 
+      if (b.emotion==2) totalPoints-=1; 
+      if (b.emotion==3) totalPoints-=2; 
+      if (b.emotion==4) totalPoints+=0; 
+      if (b.emotion==5) totalPoints+=1;
+    }
+    return totalPoints;
   }
 }
