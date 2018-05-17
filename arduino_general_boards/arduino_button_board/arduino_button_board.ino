@@ -1,6 +1,6 @@
 //This code is for the Arduino button board.
 
-
+//test
 
 #include <Adafruit_NeoPixel.h>
 
@@ -9,12 +9,13 @@
 
 #define PIXEL_COUNT 24
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
-int buttonpins[] = {1, 2, 3, 4, 5};
+int buttonpins[] = {2, 4, 7, 8, 12};
 int buttonvalues[5] = {};
-char headers[] = {'X', 'y', 'Z', 'U', 'V'};
+char headers[] = {'X', 'Y', 'Z', 'U', 'V'};
+int lightlocations[] = {1, 6, 11, 16, 21};
 int interval = 500;
 unsigned long previousm = 0;
-
+char c;
 
 //char HEADERS[];
 
@@ -31,8 +32,36 @@ void setup() {
 void loop() {
   readvalues();
   datasender();
- 
+  communication();
 
+  //  delay(1000);
+  //
+  //  buttonlight();
+  //
+
+}
+
+
+
+void communication() {                //currently some testing.
+
+  if (Serial.available() > 0) {
+
+
+    c = Serial.read();
+
+    if (c == 'R') {
+      setwheelred();
+    }
+
+  } else if (c == 'G') {
+    setwheelgreen();
+
+
+  }
+  else {
+    theaterChaseRainbow(5000);
+  }
 }
 
 void readvalues() {
@@ -40,6 +69,7 @@ void readvalues() {
     buttonvalues[i] = digitalRead(buttonpins[i]);
   }
 }
+
 
 
 void datasender() {
@@ -53,7 +83,47 @@ void datasender() {
   }
 
 }
+void setwheelred() {
+  for ( int i = 0;  i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, 255, 0, 0);
+  }
+  strip.show();
 
+}
+void setwheelgreen() {
+  for ( int i = 0;  i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, 0, 255, 0);
+  }
+  strip.show();
+
+
+}
+
+
+void buttonlight() {
+
+
+  strip.setBrightness(255);
+  for (int i = 0; i < 5; i++) {
+    if (buttonvalues[i] == 1) {
+
+      strip.setPixelColor(lightlocations[i], 255, 255, 255);
+
+    } else {
+      for (int x = 0; x < strip.numPixels(); x++) {
+        strip.setPixelColor(i, 0, 0, 0);
+      }
+
+    }
+    strip.show();
+
+
+
+  }
+
+
+
+}
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
   if (WheelPos < 85) {
@@ -89,11 +159,11 @@ void theaterChaseRainbow(uint8_t wait) {
     for (int q = 0; q < 3; q++) {
       for (int i = 0; i < strip.numPixels(); i = i + 3) {
         strip.setPixelColor(i + q, Wheel( (i + j) % 255)); //turn every third pixel on
-         }strip.show();
-      }
-      
-
+      } strip.show();
     }
- 
+
+
+  }
+
 }
 
