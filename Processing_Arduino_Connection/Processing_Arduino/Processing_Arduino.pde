@@ -15,8 +15,8 @@ Serial Nano1, Nano2, Nano3, Nano4, Nano5;       // all the Arduino Nano boards
 Serial Arduino_CB;         //Arduino buttonboard
 Serial Arduino_OF;         //Arduino General
 int NEWLINE = 10;
-char header[] = {'X','Y','Z','U','V'};           
-int pinDATA[] = new int[5];                     
+char header[] = {'X','Y','Z','U','V','Q'};           
+int pinDATA[] = new int[6];                     
 String buff= "";
 
 void setup()
@@ -53,11 +53,10 @@ void draw() {
   //delay(1500);
   Data_Arduino();
   println(pinDATA);
-  if(mouseX>0.5*width){
-    setcolorRED(Arduino_CB);
+  setcolorRED(Arduino_CB,255);
   }
   
-}
+
 
 
 
@@ -88,7 +87,7 @@ void Receive_Arduino(int serial){
       
         buff = buff.substring(0, buff.length()-1);
         
-        for (int z=0; z<5; z++) {
+        for (int z=0; z<6; z++) {
           if (c == header[z]) {
             pinDATA[z] = Integer.parseInt(buff);
           }
@@ -118,8 +117,8 @@ void Receive_Arduino(int serial){
 
 
 //========================================
-void setcolorRED(Serial Arduino) {                          //=================== This function can be uses also for the button board
-  Arduino.write("R");
+void setcolorRED(Serial Arduino,int value) {                          //=================== This function can be uses also for the button board
+  Arduino.write("R"+value);
 }
 void setcolorBLUE(Serial Arduino) {
   Arduino.write("B");
