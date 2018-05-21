@@ -32,6 +32,11 @@ boolean checkpressed = false;
 char command;
 uint32_t d;
 
+
+//11 bit represents the board state. odd bits are the status on if the persons are picked. Even numbers are their current emotions
+//11. bit is the board state. S stands for selection T is for talking 
+char boardState[] = {'0','H','0','S','0','A','0','N','0','F','S'};  
+
   
 void setup() {
 
