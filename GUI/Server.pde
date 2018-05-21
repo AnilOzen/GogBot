@@ -1,22 +1,20 @@
+// App-server
+
 import oscP5.*;
 import netP5.*;
 
 class Server {
-
   OscP5 oscP5;
   NetAddress remoteLocation;
-  String clientIP;
-  float accelerometerX, accelerometerY, accelerometerZ;
-  int[] data = {0, 0, 0};
+  int[] data = {0, 0, 0}; // The data it received
 
   Server() {
     oscP5 = new OscP5(this, 12000);
     remoteLocation = new NetAddress("130.89.000.00", 12000);
-    println(oscP5.ip());
   }
 
   void oscEvent(OscMessage theOscMessage) {
-    if (theOscMessage.checkTypetag("fffs")) {
+    if (theOscMessage.checkTypetag("fffs")) { // If there is data, save it
       data[0] =  (int)theOscMessage.get(0).floatValue();
       data[1] =  (int)theOscMessage.get(1).floatValue();
       data[2] =  (int)theOscMessage.get(2).floatValue();

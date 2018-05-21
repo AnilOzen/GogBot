@@ -1,26 +1,19 @@
 class Brain {
-  PVector loc;
-  int state = 0;
-  int emotion;
-  int serialPort;
-  Serial arduino_LED;    
+  PVector loc; // Location on the screen, just for the GUI
+  int state = 0; // If it is selected or not
+  int emotion; // Current emotion
   int[] colors= {120, 50, 0, 235, 285}; // Hue color values
 
-  Brain(float x_, float y_, int emotion_, Serial arduino_) {
-    loc=new PVector(x_, y_);
+  Brain(int emotion_) {
+    loc=new PVector(300*cos(map(emotion_, 0, 5, -HALF_PI, HALF_PI+PI)), 300*sin(map(emotion_, 0, 5, -HALF_PI, HALF_PI+PI)));
     emotion=emotion_+1;
-    arduino_LED = arduino_;
   }
 
   void updateEmotion(int newEmotion){
     emotion = newEmotion;
   }
 
-  void sendEmotionToArduino(){
-    arduino_LED.write(emotion);
-  }
-
-  void run() {
+  void display() {
     colorMode(HSB);
     fill(colors[emotion-1]*255/360, 255, 255);
     ellipse(loc.x, loc.y, 50, 50); 

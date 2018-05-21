@@ -46,7 +46,7 @@ void loop() {
 
   communication();
   //   color_strip(255,255,0,255);
- 
+
 
   //color_strip(255,255,0,255);
 }
@@ -55,27 +55,28 @@ void loop() {
 
 void communication() {                //currently some testing.
 
-  if (Serial.available() > 0) {
+  while (Serial.available() > 0) {
 
+    int value = Serial.parseInt();
 
-    c = Serial.read();
-    
-    if (c == 'R') {
-      color_strip(255, 0, 0, BRIGHTNESS);
+    char command = Serial.read();
+
+    if (command == 'R') {
+      color_strip(255, 0, 0, value);
     }
 
-  } if (c == 'G') {
-    color_strip(0, 255, 0, BRIGHTNESS);
+    if (command == 'G') {
+      color_strip(0, 255, 0, value);
 
 
-  }
-  if (c == 'B') {
-    color_strip(0, 0, 255, BRIGHTNESS);
+    }
+    if (command == 'B') {
+      color_strip(0, 0, 255, value);
 
 
-  }
-  if ( c == 'A'){
-         int zz = random(1, 6);
+    }
+    if (command == 'A') {
+      int zz = random(1, 6);
 
       if ( zz != 5) {
         rr = 0xff;
@@ -88,10 +89,10 @@ void communication() {                //currently some testing.
         bb = 0x00;
 
       }
-      meteorRain( rr, gg, bb, METO_SIZE, random(60,150), true, 50);
-    
+      meteorRain( rr, gg, bb, METO_SIZE, random(60, 150), true, 50);
+
+    }
   }
-   
 }
 void color_rgbstrip() {
 
@@ -100,24 +101,24 @@ void color_rgbstrip() {
   analogWrite(greenpin, 255);
 }
 
-void color_angry(){
+void color_angry() {
   fadeAmount++;
-  
-  a_BLUE += (fadeAmount*random(0.05,2));
-  a_RED += (fadeAmount*random(0.05,2));
 
- if( a_BLUE<0 || a_BLUE >255){
-  fadeAmount*-1;
- }
- if(a_RED <= 0 || a_RED>=255){
- 
-  fadeAmount*-1;
- }
- 
- analogWrite(redpin, a_RED);
- analogWrite(bluepin, a_BLUE);
+  a_BLUE += (fadeAmount * random(0.05, 2));
+  a_RED += (fadeAmount * random(0.05, 2));
 
-  
+  if ( a_BLUE < 0 || a_BLUE > 255) {
+    fadeAmount * -1;
+  }
+  if (a_RED <= 0 || a_RED >= 255) {
+
+    fadeAmount * -1;
+  }
+
+  analogWrite(redpin, a_RED);
+  analogWrite(bluepin, a_BLUE);
+
+
 }
 
 

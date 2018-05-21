@@ -9,18 +9,19 @@
 class Network {
   ArrayList<Brain> brains = new ArrayList<Brain>();
   int totalBrains = 5;
+  Serial bPort;
 
-  int[][] results = {
+  int[][] results = { // Emotion table
     {1, 4, 3, 1, 5}, 
     {4, 2, 2, 2, 4}, 
     {3, 2, 3, 3, 1}, 
     {1, 2, 3, 4, 5}, 
     {5, 4, 1, 5, 5}};
 
-  Network(ArrayList<Serial> ports_) {
+  Network(Serial bPort_) { // brain port
     // Add new brains
-    //for (int i=0; i<totalBrains; i++) brains.add(new Brain(300*cos(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), 300*sin(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), i%5,ports_.get(i)));
-    for (int i=0; i<totalBrains; i++) brains.add(new Brain(300*cos(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), 300*sin(map(i, 0, totalBrains, -HALF_PI, HALF_PI+PI)), i%5, null)); // send null for testing
+    bPort=bPort_;
+    for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5));
   }
 
   void run() {
@@ -35,7 +36,7 @@ class Network {
     stroke(127);
     for (Brain b : brains) for (Brain o : brains) line(b.loc.x, b.loc.y, o.loc.x, o.loc.y);
     noStroke();
-    for (Brain b : brains) b.run();
+    for (Brain b : brains) b.display();
     int total = 0;
     for (Brain b : brains) if (b.state==1) total++;
     if (total == 3) {
@@ -93,7 +94,7 @@ class Network {
     for (Brain brain : brains) brain.state=0;
   }
 
-  int getTotalPoints() {
+  int getTotalPoints() { // Calculate total points
     int totalPoints=0;
     for (Brain b : brains) {
       if (b.emotion==1) totalPoints+=2; 
