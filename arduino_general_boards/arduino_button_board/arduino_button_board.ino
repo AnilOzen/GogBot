@@ -21,6 +21,7 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
+//buttonpins are ordered based on GUI. The top button is the first, the others increase clockwise.
 int buttonpins[] = {2, 4, 7, 8, 12, 13};
 int buttonvalues[7] = {};
 char headers[] = {'X', 'Y', 'Z', 'U', 'V', 'Q', 'C'};
@@ -34,10 +35,20 @@ uint32_t d;
 
 
 //11 bit represents the board state. odd bits are the status on if the persons are picked. Even numbers are their current emotions
-//11. bit is the board state. S stands for selection T is for talking 
-char boardState[] = {'0','H','0','S','0','A','0','N','0','F','S'};  
+//11. bit is the board state. 0 stands for selection 1 is for talking
+/*
+ 1=Happy
+ 2=Sad
+ 3=Angry
+ 4=Neutral
+ 5=Funny
+ */
+int boardState[] = {0, 1,
+                    0, 2,
+                    0, 3,
+                    0, 4,
+                    0, 5};
 
-  
 void setup() {
 
   for (int i = 0; i < 6; i++) {
@@ -51,12 +62,13 @@ void setup() {
 }
 
 void loop() {
-  buttonlightanimation(3);
+  //buttonlightanimation(3);
   //buttonlightanimation();
+  buttonlight(150);
   readvalues();
   datasender();
-  communication();
-
+  // rainbow(500);
+  //  communication();
   //  delay(1000);
   //
   //  buttonlight();
@@ -68,39 +80,51 @@ void loop() {
 
 void communication() {
 
+  //this part is outdated
+  /*
+    while (Serial.available() > 0) {
 
-  while (Serial.available() > 0) {
+      int value = Serial.parseInt();
+      char command = Serial.read();
 
-    int value = Serial.parseInt();
-    char command = Serial.read();
-    
-    if (command == 'R') {
-      readvalues();
-      buttonlightanimation(value);
+      if (command == 'R') {
+        readvalues();
+        buttonlightanimation(value);
+      }
+      if (command == 'G') {
+        checkpressed = false;
+        buttonlight(value);
+      }
+
     }
-    if (command == 'G') {
-      checkpressed = false;
-      buttonlight(value);
-    }
-
-  }
+  */
 }
 
 void readvalues() {
   for ( int i = 0; i < 6; i++) {
     buttonvalues[i] = digitalRead(buttonpins[i]);
   }
+  //the ordering of the buttons are not the same on board as the message
+  boardState[0] = buttonvalues[3]; //pin 8
+  boardState[2] = buttonvalues[4]; //pin 12
+  boardState[4] = buttonvalues[0]; //pin 2
+  boardState[6] = buttonvalues[1]; //pin 4
+  boardState[8] = buttonvalues[2]; //pin 7 
+  
 }
-
 
 
 void datasender() {
   if (millis() - previousm > interval) {
     previousm = millis();
-    for (int z = 0; z < 7; z++) {
-      Serial.print(headers[z]);
-      Serial.println(buttonvalues[z]);
+    for (int z = 0; z < 10; z++) {
+      //Serial.print(headers[z]);
+      //Serial.println(buttonvalues[z]);
+
+      Serial.print(boardState[z]);
     }
+
+    Serial.print("\n");
   }
 
 }
@@ -129,13 +153,13 @@ void color_stripBYTE(uint32_t x) {
 
 void buttonlightanimation(int value) {
   strip.setBrightness(255);
-  
+
   if (value == 1) {
     d = strip.Color(255, 0, 0);
   } else if (value == 2) {
     d = strip.Color(0, 255, 0);
   } else {
-    d = strip.Color(255, 255,255);
+    d = strip.Color(255, 255, 255);
   }
 
   if (buttonvalues[5] == 1) {
@@ -147,10 +171,10 @@ void buttonlightanimation(int value) {
       buttonlight(255);
       delay(500);
       rainbow(1000);
-      
+
       color_stripBYTE(d);
       buttonvalues[6] = 1;
-    
+
     }
     else {
       for (int i = 0; i, strip.numPixels(); i++) {
@@ -245,4 +269,5 @@ void theaterChaseRainbow(uint8_t wait) {
   }
 
 }
+
 
