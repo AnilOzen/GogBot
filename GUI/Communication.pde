@@ -9,22 +9,31 @@ class Communication {
     int incomingData = 0;
     String switchMessage = "";
     String validRead = "";
-
+    String invalidRead = "";
     while (sPort.available() > 0) {
       incomingData = sPort.read();
       if (char(incomingData) != '\n')
       {
         switchMessage += char(incomingData);
-      } 
-      else
+      } else
       {
-        if(switchMessage.length() == 10);
+        if (switchMessage.length() == 10)
           validRead = switchMessage;
         switchMessage = "";
       }
     }
     if (validRead.length() != 0)
-      println(validRead.length(), validRead);
-    return validRead;
+    {
+      println(validRead);
+      return validRead;
+    }
+    else
+      return invalidRead;
+  }
+  
+  void writeSwitchBoard(String newEmotions)
+  {
+    while (sPort.available() > 0)
+      sPort.write(newEmotions);
   }
 }
