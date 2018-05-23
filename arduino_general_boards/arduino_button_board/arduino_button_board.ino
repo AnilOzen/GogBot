@@ -106,10 +106,11 @@ void readvalues() {
   }
   //the ordering of the buttons are not the same on board as the message
   boardState[0] = buttonvalues[3]; //pin 8
-  boardState[2] = buttonvalues[4]; //pin 12
-  boardState[4] = buttonvalues[0]; //pin 2
-  boardState[6] = buttonvalues[1]; //pin 4
-  boardState[8] = buttonvalues[2]; //pin 7 
+  boardState[1] = buttonvalues[4]; //pin 12
+  boardState[2] = buttonvalues[0]; //pin 2
+  boardState[3] = buttonvalues[1]; //pin 4
+  boardState[4] = buttonvalues[2]; //pin 7 
+  boardState[5] = buttonvalues[5]; //pin 7 
   
 }
 
@@ -117,14 +118,15 @@ void readvalues() {
 void datasender() {
   if (millis() - previousm > interval) {
     previousm = millis();
-    for (int z = 0; z < 10; z++) {
+    Serial.print('S');
+    for (int z = 0; z < 5; z++) {
       //Serial.print(headers[z]);
       //Serial.println(buttonvalues[z]);
 
       Serial.print(boardState[z]);
     }
-
-    Serial.print("\n");
+    Serial.print('B');
+    Serial.println(boardState[5]);
   }
 
 }
