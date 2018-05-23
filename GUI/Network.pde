@@ -93,7 +93,7 @@ class Network {
     // Disable all of the connections
     for (Brain brain : brains) brain.state=0;
   }
-
+  
   int getTotalPoints() { // Calculate total points
     int totalPoints=0;
     for (Brain b : brains) {
