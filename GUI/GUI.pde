@@ -5,6 +5,7 @@ Network network;
 Communication communication;
 Server server;
 Sound sound;
+Amplitude amp;
 
 void setup() {
   size(800, 800);
@@ -23,6 +24,8 @@ void setup() {
   ArrayList<SoundFile> brainLines = new ArrayList<SoundFile>();
   for (int i=0; i<5; i++) brainLines.add(new SoundFile(this, emotionNames[i]+".mp3"));
   sound = new Sound(brainLines);
+  
+  amp = new Amplitude(this);
 }
 
 void draw() {

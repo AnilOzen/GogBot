@@ -41,7 +41,7 @@ class Network {
     for (Brain b : brains) if (b.state==1) total++;
     if (total == 3) {
       noFill();
-      stroke(255);
+      stroke(255,180);
       beginShape();
       for (Brain b : brains) if (b.state==1) vertex(b.loc.x, b.loc.y);
       endShape(CLOSE);
