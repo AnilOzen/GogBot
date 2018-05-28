@@ -65,7 +65,8 @@ class Network {
 
     // Execute if the button is pressed and the total selected brains is 3
     if (dist(mouseX, mouseY, width-100, 100)<70 && total==3) {
-      updateEmotions();
+      sound.startTalking = true;
+      //updateEmotions();
     }
   }
 
