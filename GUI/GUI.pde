@@ -32,6 +32,7 @@ void draw() {
   network.run();
   sound.run();
   //communication.readSwitchBoard();
+  communication.messages();
 }
 
 void mousePressed() {

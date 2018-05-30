@@ -52,6 +52,7 @@ class Sound {
       } else {
         talking=false;
         index=0;
+        for(int i=0;i<5;i++) network.brains.get(i).amplitude=0;
         network.updateEmotions();
       }
     }
