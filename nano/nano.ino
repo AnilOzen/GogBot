@@ -211,6 +211,7 @@ void communication() {
     values[2] = inputread.substring(2).toInt(); //from char(2) until the end
     if (values[0] == 1 && values[1] == 2)
       analogWrite(3, values[2]);
+    
     /*
         Serial.print("X: ");
         Serial.println(values[0]);
