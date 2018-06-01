@@ -48,13 +48,13 @@ void draw() {
   //delay(1500);
   //setcolorGREEN(Nano1);
   //delay(1500);
-  Data_Arduino();
-  println(pinDATA[6]);
+  //Data_Arduino();
+  //println(pinDATA[6]);
 
   buttonRing(Arduino_CB,1);
-  if (pinDATA[6]==1) {
-  commandArduino(Arduino_CB, 'G', 255);
-  }
+  
+  commandArduino(Arduino_CB, 1, 1,  3);
+  
 }
 
 
@@ -64,6 +64,8 @@ void draw() {
 //===============================================================================================================================================
 //Data fucntions for getting data from the Arduino. The data will be saved in the pinDATA array.
 //===============================================================================================================================================
+
+
 
 void Data_Arduino() {
   while (Arduino_CB.available()>0) {                   //checks whether something is being received. 
@@ -109,11 +111,19 @@ void Receive_Arduino(int serial) {
 //===================================================
 
 
-void commandArduino(Serial Arduino, char command, int value) {   // for this function the value represents the brightness of the ledstrips
-  String i = "";
-  i+=command;
-  Arduino.write(i+value);
+void commandArduino(Serial Arduino, int value1, int value2 , int value3) {   // for this function the value represents the brightness of the ledstrips
+
+  String out ="";
+  out+=str(value1);
+  out+=str(value2);
+  out+=nf(value3,3); //str(255); 
+   
+  out+='\n';
+  print(out);
+ 
+  Arduino.write(out);
 }
+
 
 void buttonRing(Serial Arduino, int colorValue) {                          //the color value 1 = red, 2= green,        This represents whether the connection is right or wrong. 
   Arduino.write("R"+colorValue);
