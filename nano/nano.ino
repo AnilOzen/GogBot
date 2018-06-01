@@ -30,13 +30,16 @@ char command2;
 String data;
 int value;
 String buff = "";
+char val; //the character read from processing
 
 int currentValue = 0;
 int values[3] ;
+
 int a_RED;
 int a_BLUE;
 
 boolean check =  false;
+String inputread;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, leddatapin, NEO_GRB + NEO_KHZ800);
 
@@ -57,7 +60,7 @@ void setup() {
 }
 
 void loop() {
-  communication2();
+  communication();
   control();
 }
 
@@ -156,52 +159,80 @@ void fadeToBlack(int ledNo, byte fadeValue) {
   strip.setPixelColor(ledNo, r, g, b);
 }
 
-void communication2(){
-while (Serial.available()) {
+void communication2() {
+  while (Serial.available()) {
     String incomingValue = Serial.readStringUntil('\n');
-    if( incomingValue.length() > 0) {
-//      Serial.println(incomingValue.charAt(0));
-      values[0]= String(incomingValue.charAt(0)).toInt();
-     
-      incomingValue ="";
+    if ( incomingValue.length() > 0) {
+      //      Serial.println(incomingValue.charAt(0));
+      values[0] = String(incomingValue.charAt(0)).toInt();
+
+      incomingValue = "";
       delay(10);
     }
-}
-if(values[0]==1){
-    analogWrite(3,255);
-}else{
-    analogWrite(3,0);
-}
+  }
+  if (values[0] == 1) {
+    analogWrite(3, 255);
+  } else {
+    analogWrite(3, 0);
+  }
 
 }
 
 void communication() {
-//       Serial.print("X: ");
-//       Serial.println(values[0]);
-//       Serial.print("Y: ");
-//       Serial.println(values[1]);
-//       Serial.print("Z: ");
-//       Serial.println(values[2]);
-  while (Serial.available()) {
-    String incomingValue = Serial.readStringUntil('\n');
-    if( incomingValue.length() > 0) {
-      Serial.println(incomingValue.charAt(0));
-      values[0]= String(incomingValue.charAt(0)).toInt();
-      values[1]= String(incomingValue.charAt(1)).toInt();
-      values[2]= incomingValue.substring(2,5).toInt();
-      incomingValue ="";
-      delay(10);
+  /*
+    while (Serial.available()) {
+      String incomingValue = Serial.readStringUntil('\n');
+      if( incomingValue.length() > 0) {
+        Serial.println(incomingValue.charAt(0));
+        values[0]= String(incomingValue.charAt(0)).toInt();
+        values[1]= String(incomingValue.charAt(1)).toInt();
+        values[2]= incomingValue.substring(2,5).toInt();
+        incomingValue ="";
+        delay(10);
+      }
     }
+  */
+
+  inputread = "";
+  if (Serial.available())
+  { // If data is available to read,
+    do {
+      val = Serial.read(); // read it and store it in val
+      if (val != -1) {
+        inputread = inputread + val;
+      }
+    } while (val != -1);
   }
+
+  if ( inputread.length() == 5) {
+
+    values[0] = String(inputread.charAt(0)).toInt();
+    values[1] = String(inputread.charAt(1)).toInt();
+    values[2] = inputread.substring(2).toInt(); //from char(2) until the end
+    if (values[0] == 1 && values[1] == 2)
+      analogWrite(3, values[2]);
+    /*
+        Serial.print("X: ");
+        Serial.println(values[0]);
+        Serial.print("Y: ");
+        Serial.println(values[1]);
+        Serial.print("Z: ");
+        Serial.println(values[2]);
+    */
+
+
+  }
+
+  delay(10); //TODO We need to check if this is actually necessary
 }
 void control() {
 
 
   if (values[0] == 1) {
-  
+
     switch (values[1]) {
       case 1:   //red
-        
+
         color_rgbstrip(values[2], 0, 0);              //red
         break;
       case 2:
@@ -217,9 +248,9 @@ void control() {
         color_rgbstrip(values[2], 0, 0);               //blue
         break;
     }
-    
-    }else{
-      analogWrite(3,0);
+
+  } else {
+    analogWrite(3, 0);
 
   }
   if (values[2] == 1) {
