@@ -33,7 +33,8 @@ void setup()
   //Nano3 = new Serial(this, Serial.list()[0], 9600);
   //Nano4 = new Serial(this, Serial.list()[0], 9600);
   //Nano5 = new Serial(this, Serial.list()[0], 9600);
-  Arduino_CB = new Serial(this, Serial.list()[0], 9600);
+  //Arduino_CB = new Serial(this, Serial.list()[0], 9600);
+  Arduino_CB = new Serial(this, "/dev/cu.usbmodem1411", 9600);
   //Arduino_OF = new Serial(this, Serial.list()[0], 9600);
 }
 
@@ -50,11 +51,17 @@ void draw() {
   //delay(1500);
   //Data_Arduino();
   //println(pinDATA[6]);
-
-  buttonRing(Arduino_CB,1);
+  //TODO fix the flicker because of button ring
+  //buttonRing(Arduino_CB,1);
+  commandArduino(Arduino_CB, 1, 2, (int)map(mouseX,0, width,0, 255));
+  /*
+  String out ="";
+  out+=str(1);
+  out+=str(2);
+  out+=nf(255,3); //str(255); 
   
-  commandArduino(Arduino_CB, 1, 1,  3);
-  
+  Arduino_CB.write(out);
+  */
 }
 
 
@@ -117,11 +124,12 @@ void commandArduino(Serial Arduino, int value1, int value2 , int value3) {   // 
   out+=str(value1);
   out+=str(value2);
   out+=nf(value3,3); //str(255); 
+  //out = "12250"; 
+  //out+='\n';
+  
+  Arduino_CB.write(out);
    
-  out+='\n';
-  print(out);
- 
-  Arduino.write(out);
+   
 }
 
 
