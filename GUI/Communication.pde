@@ -1,44 +1,34 @@
 class Communication {
   Serial sPort;
+  String latestMessage = "";
 
   Communication(Serial sPort_) { // switchboard port
     sPort = sPort_;
   }
 
-  String readSwitchBoard() {
-
-
+  void readSwitchBoard() {
     int incomingData = 0;
     String switchMessage = "";
     String validRead = "";
-    String invalidRead = "";
     while (sPort.available() > 0) {
       incomingData = sPort.read();
-      if (char(incomingData) != '\n')
-      {
+      if (char(incomingData) != '\n') {
         switchMessage += char(incomingData);
-      } else
-      {
-
-        if (switchMessage.length() == 9)
-          validRead = switchMessage;
-
+      } else {
+        if (switchMessage.length() == 9) validRead = switchMessage;
         switchMessage = "";
       }
     }
 
-    if (validRead.length() != 0)
-    {
+    if (validRead.length() != 0) {
       println(validRead);
-      return validRead;
-    } else
-      return invalidRead;
+      latestMessage=validRead;
+    }
   }
 
-  void writeSwitchBoard(String newEmotions)
+  void writeSwitchBoard()
   {
-    while (sPort.available() > 0)
-      sPort.write(newEmotions);
+    for (int i=1; i<6; i++) sPort.write(i*10+network.brains.get(i-1).emotion);
   }
 
   void messages() {

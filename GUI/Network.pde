@@ -26,6 +26,12 @@ class Network {
 
   void run() {
     drawUI();
+    if (communication.latestMessage.length()>0) {
+      for (int i=0; i<totalBrains; i++) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
+      int totalSelected = 0;
+      for(Brain b : brains) if(b.state==1) totalSelected++;
+      if (communication.latestMessage.charAt(7)=='1' && totalSelected==3 && !sound.talking) sound.startTalking = true;
+    }
   }
 
   void drawUI() {
@@ -41,7 +47,7 @@ class Network {
     for (Brain b : brains) if (b.state==1) total++;
     if (total == 3) {
       noFill();
-      stroke(255,180);
+      stroke(255, 180);
       beginShape();
       for (Brain b : brains) if (b.state==1) vertex(b.loc.x, b.loc.y);
       endShape(CLOSE);
@@ -59,7 +65,7 @@ class Network {
     // Count the number of selected brains
     int total = 0;
     for (Brain b : brains) if (b.state==1) total++;
-    
+
     // Connect the brains, limit the maximum selected brains to 3
     for (Brain b : brains) if (dist(mouseX-width/2, mouseY-height/2, b.loc.x, b.loc.y)<30) b.state = (total<3) ? (b.state+1) %2 : 0;
 
@@ -94,7 +100,7 @@ class Network {
     // Disable all of the connections
     for (Brain brain : brains) brain.state=0;
   }
-  
+
   int getTotalPoints() { // Calculate total points
     int totalPoints=0;
     for (Brain b : brains) {
