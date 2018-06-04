@@ -26,15 +26,7 @@ class Communication {
     }
   }
 
-  void writeSwitchBoard()
-  {
+  void writeSwitchBoard(){
     for (int i=1; i<6; i++) sPort.write(i*10+network.brains.get(i-1).emotion);
-  }
-
-  void messages() {
-    for (int i=0; i<5; i++) {
-      print("S" + network.brains.get(i).state + "E" +  network.brains.get(i).emotion + "A" +  round(network.brains.get(i).amplitude*100) + " , ");
-    }
-    println();
   }
 }
