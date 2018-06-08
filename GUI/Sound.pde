@@ -39,6 +39,7 @@ class Sound {
   float timerReset = 0;
   
   int currentRound = 1;
+  float talkDelay = 2; // How many seconds between te lines
 
   void run() {
     if (startTalking) {
@@ -57,7 +58,7 @@ class Sound {
     if (talking) {
       if (index<3) {
         network.brains.get(activeBrains[index]).amplitude=amp.analyze(); // Pass the amplitude of the current sound to the brains
-        timer = (millis()-timerReset)/1000.00; // Update the timer
+        timer = (millis()-timerReset)/1000.00- ((index==2) ? 0 : talkDelay); // Update the timer
         // If the file has ended
         if ((currentRound==1 && round1[network.brains.get(activeBrains[index]).emotion-1].duration()<timer) || (currentRound==2 && round2[network.brains.get(activeBrains[index]).emotion-1][activeBrains[index]].duration()<timer)) {
           index++;

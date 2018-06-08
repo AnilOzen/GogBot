@@ -10,6 +10,7 @@ Amplitude amp;
 void setup() {
   //size(800, 800);
   fullScreen();
+  pixelDensity(1);
   //network = new Network(new Serial(this, Serial.list()[0], 9600)); // Uncommented for testing
   //communication = new Communication(new Serial(this,Serial.list()[0], 9600)); // Uncommented for testing
   communication = new Communication(null);
@@ -29,6 +30,7 @@ void setup() {
 void draw() {
   network.run();
   sound.run();
+  
   //communication.readSwitchBoard();
   //communication.writeSwitchBoard();
 }
