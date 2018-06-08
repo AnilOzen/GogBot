@@ -13,21 +13,21 @@
 #define BRIGHTNESS  255
 #define METO_SIZE 8
 
-#define red 0xFF0000 // 0x
-#define yellow 0xFFFF00
-#define green 0x008000
-#define purple 0x800080
-#define blue 0x0000FF
+#define RED 0xFF0000
+#define YELLOW 0xFFFF00
+#define GREEN 0x008000
+#define PURPLE 0x800080
+#define BLUE 0x0000FF
 
 byte rr = 0xff;
 byte gg = 0xff;
 byte bb = 0xff;
 
 int currentValue = 0;
-int values[3];
+int values[3] = {0,0,0};
 
 int a_BLUE;
-
+char val;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, leddatapin, NEO_GRB + NEO_KHZ800);
 
@@ -145,19 +145,20 @@ void fadeToBlack(int ledNo, byte fadeValue) {
   }
 */
 void communication() {
-  inputread = "";
+  String inputread = "";
   if (Serial.available())
   { // If data is available to read,
     do {
-      val = Serial.read(); // read it and store it in val
+       val = Serial.read(); // read it and store it in val
       if (val != -1) {
         inputread = inputread + val;
       }
-    } while (val != -1);
+      
+    }
+    while( val != -1);
   }
 
   if ( inputread.length() == 5) {
-
     values[0] = String(inputread.charAt(0)).toInt();
     values[1] = String(inputread.charAt(1)).toInt();
     values[2] = inputread.substring(2).toInt(); //from char(2) until the end
@@ -166,9 +167,10 @@ void communication() {
   delay(10); //TODO We need to check if this is actually necessary
 }
 
+
 void control() {
 
-  if (values[0] ==1) {
+  if (values[0] == 1) {
 
     switch (values[1]) {
       case 1:   //red
@@ -191,20 +193,20 @@ void control() {
   } else if ( values[0] == 2) {
 
     switch (values[1]) {
-      case 1:   
-        color_strip(red, 255);              //red
+      case 1:
+        color_strip(RED, 255);              //red
         break;
       case 2:
-        color_strip(yellow, 255);             //yellow
+        color_strip(YELLOW, 255);             //yellow
         break;
       case 3:
-        color_strip(purple, 255);             //purple
+        color_strip(PURPLE, 255);             //purple
         break;
       case 4:
-        color_strip(green, 255);              // green
+        color_strip(GREEN, 255);              // green
         break;
       case 5:
-        color_strip(blue, 255);              //blue
+        color_strip(BLUE, 255);              //blue
         break;
     }
   } else if (values[0] == 3) {
