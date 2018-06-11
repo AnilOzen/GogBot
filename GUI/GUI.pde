@@ -30,6 +30,7 @@ void setup() {
 void draw() {
   network.run();
   sound.run();
+  if(keyPressed && key == 'r') network.reset();
   
   //communication.readSwitchBoard();
   //communication.writeSwitchBoard();

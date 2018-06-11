@@ -59,7 +59,7 @@ class Network {
     }
     colorMode(RGB);
     noStroke();
-    fill((total==3) ? color(0,255,0) : color(255,0,0));
+    fill((total==3) ? color(0, 255, 0) : color(255, 0, 0));
     ellipse(0, 0, 70, 70);
     fill(255);
     text("POINTS: " + getTotalPoints(), -width/2+180, -height/2+100);
@@ -74,7 +74,7 @@ class Network {
     for (Brain b : brains) if (dist(mouseX-width/2, mouseY-height/2, b.loc.x, b.loc.y)<30) b.state = (total<3) ? (b.state+1) %2 : 0;
 
     // Execute if the button is pressed and the total selected brains is 3
-    if (dist(mouseX, mouseY,width/2, height/2)<70 && total==3) {
+    if (dist(mouseX, mouseY, width/2, height/2)<70 && total==3) {
       sound.startTalking = true;
       //updateEmotions();
     }
@@ -115,5 +115,17 @@ class Network {
       if (b.emotion==5) totalPoints+=2;
     }
     return totalPoints;
+  }
+
+  void reset() {
+    for (int i=0; i<brains.size(); i++) brains.get(i).emotion = i+1;
+    for (SoundFile s : round1) s.stop();
+    for(int i=0;i<round2[0].length;i++) for (SoundFile s : round2[i]) s.stop();
+    for(int i=0;i<round3[0].length;i++) for (SoundFile s : round3[i]) s.stop();
+    sound.startTalking = false;
+    sound.talking=false;
+    sound.index=0;
+    sound.currentRound=1;
+    for (Brain b : brains) b.amplitude=0;
   }
 }
