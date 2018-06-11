@@ -7,7 +7,7 @@
  */
  
 int f = 0;
-int m = 40;
+int m = 50;
 
 class Animation {
   ArrayList<AniBrain> brains = new ArrayList<AniBrain>();
