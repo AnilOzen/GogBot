@@ -19,7 +19,7 @@ void setup() {
   //the port name will be different from this most likely. This is for mac
   //Serial switchPort = new Serial(this, "/dev/cu.usbmodem1421", 9600);
 
-  //server = new Server();
+  server = new Server();
   
   loadSoundFiles();
   sound = new Sound();

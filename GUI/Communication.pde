@@ -10,6 +10,7 @@ class Communication {
     int incomingData = 0;
     String switchMessage = "";
     String validRead = "";
+    
     while (sPort.available() > 0) {
       incomingData = sPort.read();
       if (char(incomingData) != '\n') {

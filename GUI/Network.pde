@@ -9,6 +9,7 @@
 class Network {
   ArrayList<Brain> brains = new ArrayList<Brain>();
   int totalBrains = 5;
+
   Serial bPort;
 
   int[][] results = { // Emotion table
@@ -17,11 +18,11 @@ class Network {
     {3, 2, 3, 3, 1}, 
     {1, 2, 3, 4, 5}, 
     {5, 4, 1, 5, 5}};
+  int[] emotionPoints = {1, -1, -2, 0, 2};
 
   Network(Serial bPort_) { // brain port
-    // Add new brains
     bPort=bPort_;
-    for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5));
+    for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5)); // Add the brains
   }
 
   void run() {
@@ -100,28 +101,19 @@ class Network {
     b.get(0).updateEmotion(newEmo0);
     b.get(1).updateEmotion(newEmo1);
     b.get(2).updateEmotion(newEmo2);
-
-    // Disable all of the connections
-    for (Brain brain : brains) brain.state=0;
   }
 
   int getTotalPoints() { // Calculate total points
     int totalPoints=0;
-    for (Brain b : brains) {
-      if (b.emotion==1) totalPoints+=1; 
-      if (b.emotion==2) totalPoints-=1; 
-      if (b.emotion==3) totalPoints-=2; 
-      if (b.emotion==4) totalPoints+=0; 
-      if (b.emotion==5) totalPoints+=2;
-    }
+    for (Brain b : brains) totalPoints+=emotionPoints[b.emotion-1]; // Get the points for each emotion from the emotionPoints array
     return totalPoints;
   }
 
   void reset() {
     for (int i=0; i<brains.size(); i++) brains.get(i).emotion = i+1;
     for (SoundFile s : round1) s.stop();
-    for(int i=0;i<round2[0].length;i++) for (SoundFile s : round2[i]) s.stop();
-    for(int i=0;i<round3[0].length;i++) for (SoundFile s : round3[i]) s.stop();
+    for (int i=0; i<round2[0].length; i++) for (SoundFile s : round2[i]) s.stop();
+    for (int i=0; i<round3[0].length; i++) for (SoundFile s : round3[i]) s.stop();
     sound.startTalking = false;
     sound.talking=false;
     sound.index=0;

@@ -56,7 +56,7 @@ class Sound {
     }
 
     if (talking) {
-      if (index<3) {
+      if (index<3) { // Once for each of the 3 brains
         network.brains.get(activeBrains[index]).amplitude=amp.analyze(); // Pass the amplitude of the current sound to the brains
         timer = (millis()-timerReset)/1000.00- ((index==2) ? 0 : talkDelay); // Update the timer
         // If the file has ended
@@ -72,27 +72,15 @@ class Sound {
         index=0;
         for (int i=0; i<5; i++) network.brains.get(i).amplitude=0; // Set the amplitude to 0
         network.updateEmotions(); // Update the emotions
-        currentRound++;
-        currentRound = min(currentRound, 2); // For testing
+        currentRound++; // Proceed to the next round
+        currentRound = min(currentRound, 3); // For testing
       }
     }
   }
 
   void talk(int brainIndex, int emotion) {
-    if (currentRound==1) {
-      round1[emotion-1].play();
-      SoundFile temp = round1[emotion-1];
-      amp.input(temp);
-    }
-    if (currentRound==2) {
-      round2[emotion-1][brainIndex].play();
-      SoundFile temp = round2[emotion-1][brainIndex];
-      amp.input(temp);
-    }
-    if (currentRound==3) {
-      round3[emotion-1][brainIndex-1].play();
-      SoundFile temp = round3[emotion-1][brainIndex];
-      amp.input(temp);
-    }
+    SoundFile s = (currentRound == 1) ? round1[emotion-1] : ((currentRound==2) ? round2[emotion-1][brainIndex] : round3[emotion-1][brainIndex]); // Get the correct soundfile
+    s.play(); // Start playing the soundfile
+    amp.input(s); // Start analyzing the amplitude of the soundfile
   }
 }
