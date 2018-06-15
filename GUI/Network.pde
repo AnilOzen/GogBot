@@ -10,8 +10,6 @@ class Network {
   ArrayList<Brain> brains = new ArrayList<Brain>();
   int totalBrains = 5;
 
-  Serial bPort;
-
   int[][] results = { // Emotion table
     {1, 4, 3, 1, 5}, 
     {4, 2, 2, 2, 4}, 
@@ -20,8 +18,7 @@ class Network {
     {5, 4, 1, 5, 5}};
   int[] emotionPoints = {1, -1, -2, 0, 2};
 
-  Network(Serial bPort_) { // brain port
-    bPort=bPort_;
+  Network() { // brain port
     for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5)); // Add the brains
   }
 

@@ -27,7 +27,7 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
     {new SoundFile(this, "3/jarco_3_passionate.mp3"), new SoundFile(this, "3/thiemen_3_passionate.mp3"), new SoundFile(this, "3/jp_3_passionate.mp3"), new SoundFile(this, "3/anil_3_passionate.mp3"), new SoundFile(this, "3/julia_3_passionate.mp3")} 
   };
   
-  float amp = 50; // Increase the volume of the soundfiles a bit
+  float amp = 5; // Increase the volume of the soundfiles a bit
   for (SoundFile s : round1) s.amp(amp);
   for (int i=0; i<round2[0].length; i++) for (SoundFile s : round2[i]) s.amp(amp);
   for (int i=0; i<round3[0].length; i++) for (SoundFile s : round3[i]) s.amp(amp);
@@ -44,7 +44,7 @@ class Sound {
   float timerReset = 0;
 
   int currentRound = 1;
-  float talkDelay = 2; // How many seconds between te lines
+  float talkDelay = 1.5; // How many seconds between te lines
 
   void run() {
     if (startTalking) {
