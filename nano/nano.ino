@@ -64,7 +64,7 @@ void color_strip(uint32_t  color, int brightness) {
 }
 
 
-void color_rgbstrip(int r, int b, int g) {
+void color_rgbstrip(int r, int g, int b) {
   analogWrite(redpin, r);
   analogWrite(bluepin, b);
   analogWrite(greenpin, g);
@@ -186,7 +186,7 @@ void control() {
         color_rgbstrip(0, values[2], 0);              // green
         break;
       case 5:
-        color_rgbstrip(values[2], 0, 0);               //blue
+        color_rgbstrip(0, 0, values[2]);               //blue
         break;
     }
 
