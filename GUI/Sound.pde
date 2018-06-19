@@ -11,7 +11,7 @@ SoundFile[][] round2 = new SoundFile[5][5];
 SoundFile[][] round3 = new SoundFile[5][5];
 
 SoundFile[] ambients = new SoundFile[3];
-SoundFile intro;
+SoundFile intro, intro2;
 
 void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
   round1=new SoundFile[]{new SoundFile(this, "1/jarco_1_happy.mp3"), new SoundFile(this, "1/thiemen_1_sad.mp3"), new SoundFile(this, "1/jp_1_angry.mp3"), new SoundFile(this, "1/anil_1_neutral.mp3"), new SoundFile(this, "1/julia_1_passionate.mp3")};
@@ -29,8 +29,9 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
     {new SoundFile(this, "3/jarco_3_neutral.mp3"), new SoundFile(this, "3/thiemen_3_neutral.mp3"), new SoundFile(this, "3/jp_3_neutral.mp3"), new SoundFile(this, "3/anil_3_neutral.mp3"), new SoundFile(this, "3/julia_3_neutral.mp3")}, 
     {new SoundFile(this, "3/jarco_3_passionate.mp3"), new SoundFile(this, "3/thiemen_3_passionate.mp3"), new SoundFile(this, "3/jp_3_passionate.mp3"), new SoundFile(this, "3/anil_3_passionate.mp3"), new SoundFile(this, "3/julia_3_passionate.mp3")} 
   };
-  intro = new SoundFile(this,"intro/b.mp3");
-  intro.amp(5);
+  intro = new SoundFile(this,"intro/1.wav");
+  intro2 = new SoundFile(this,"intro/2.wav");
+  intro.amp(10);
   intro.play();
   ambients=new SoundFile[]{new SoundFile(this, "ambient/1.mp3"), new SoundFile(this, "ambient/2.mp3"), new SoundFile(this, "ambient/3.mp3")};
   ambients[0].amp(0.1);
@@ -54,8 +55,18 @@ class Sound {
 
   int currentRound = 1;
   float talkDelay = 1.5; // How many seconds between te lines
+  
+  boolean introBool = false;
+  
+  boolean finished = false;
 
   void run() {
+    if(millis()/1000 > intro.duration() && !introBool && (communication.latestMessage.charAt(7)=='0' || keyPressed)){
+     introBool=true;
+     intro2.amp(10);
+     intro2.play();
+    }
+    
     if (startTalking) {
       int j=0;
       for (int i=0; i<network.totalBrains; i++) if (network.brains.get(i).state==1) { // Put the indexes of the 3 selected brains into an array for convenience.
@@ -87,6 +98,7 @@ class Sound {
         for (int i=0; i<5; i++) network.brains.get(i).amplitude=0; // Set the amplitude to 0
         network.updateEmotions(); // Update the emotions
         currentRound++; // Proceed to the next round
+        if(currentRound==4) finished=true;
         currentRound = min(currentRound, 3); // For testing
         ambients[currentRound-2].stop();
         ambients[currentRound-1].amp(0.1);

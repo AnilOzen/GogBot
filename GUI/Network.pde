@@ -28,7 +28,7 @@ class Network {
       for (int i=0; i<totalBrains; i++) if(!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
       int totalSelected = 0;
       for (Brain b : brains) if (b.state==1) totalSelected++;
-      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking) {
+      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && (millis()/1000 > (intro.duration()+intro2.duration())) && !sound.finished) {
         intro.stop();
         sound.startTalking = true;
       }
@@ -65,10 +65,11 @@ class Network {
     
     fill(255);
     text("POINTS: " + getTotalPoints(), -width/2+180, -height/2+100);
-    text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
+    if(sound.introBool) text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
+    if(!sound.introBool) text("Intro", width/2-180,-height/2+100);
     textSize(40);
     fill(255,200);
-    text((sound.currentRound==1) ? "AI" : (sound.currentRound==2) ? "WW III" : "IDENTITY", width/2-180, -height/2+160);
+    if(sound.introBool) text((sound.currentRound==1) ? "AI" : (sound.currentRound==2) ? "WW III" : "IDENTITY", width/2-180, -height/2+160);
     
     for(int i=0;i<5;i++){
       int[] cols= {285, 120, 235, 50, 0};
@@ -81,6 +82,10 @@ class Network {
       String[] emos = {"Passionate", "Happy", "Neutral", "Sad", "Angry"};
       text(emos[i], -width/2+80,height/2-250+i*40);
     }
+    
+    textAlign(CENTER,CENTER);
+    textSize(100);
+    if(sound.finished) text("DONE", 0,0);
   }
 
   void mousePress() {

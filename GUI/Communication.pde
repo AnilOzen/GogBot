@@ -1,5 +1,5 @@
 class Communication {
-  String latestMessage = "";
+  String latestMessage = "00000001";
 
   Communication() { // switchboard port
   }

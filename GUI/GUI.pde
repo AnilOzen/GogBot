@@ -17,8 +17,8 @@ void setup() {
   fullScreen(FX2D);
   pixelDensity(1);
 
-  sPort = new Serial(this, Serial.list()[1], 9600);
-  arduinoPorts[0] = new Serial(this, Serial.list()[0], 9600);
+  sPort = new Serial(this, Serial.list()[0], 9600);
+  //arduinoPorts[0] = new Serial(this, Serial.list()[0], 9600);
   //arduinoPorts[1] = new Serial(this, Serial.list()[2], 9600);
   //arduinoPorts[2] = new Serial(this, Serial.list()[3], 9600);
   //arduinoPorts[0] = new Serial(this, Serial.list()[4], 9600);
@@ -27,7 +27,7 @@ void setup() {
   communication = new Communication();
   network = new Network();
   //server = new Server(); // The app server
-  
+
   animation = new Animation();
 
   loadSoundFiles();
@@ -38,15 +38,18 @@ void setup() {
 void draw() {
   network.run();
   sound.run();
-  if (keyPressed && key == 'r') network.reset();
-  
-  animation.run();
+
+  //animation.run();
 
   communication.readSwitchBoard();
   communication.writeSwitchBoard();
-  communication.writeArduinos();
+  //communication.writeArduinos();
 }
 
 void mousePressed() {
   network.mousePress();
+}
+
+void keyPressed() {
+  if( key == 'r') network.reset();
 }
