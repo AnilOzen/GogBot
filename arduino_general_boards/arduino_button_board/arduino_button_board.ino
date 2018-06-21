@@ -44,6 +44,7 @@ int boardState[] = {0, 1,
                    };
 
 int emotions[] = { 4, 5, 1, 2, 3};
+int amps[] = {0, 0, 0, 0, 0};
 
 int emotionColors[5][3] = { // RGB values
   {0, 255, 0},
@@ -56,29 +57,25 @@ int emotionColors[5][3] = { // RGB values
 
 void setup() {
   for (int i = 0; i < 6; i++) pinMode(buttonpins[i], INPUT);
-
   Serial.begin(9600);
-
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  strip.setBrightness(255);
 }
 
 void loop() {
-  buttonlight(150);
+  buttonlight();
   readvalues();
   sendData();
   receiveData();
 
-  // buttonlightanimation(3);
-  // buttonlightanimation();
-  // rainbow(500);
-  // delay(1000);
-  // buttonlight();
+  //buttonlightanimation(1);
+  //rainbow(10);
 }
 
 void readvalues() {
-  for ( int i = 0; i < 6; i++) buttonvalues[i] = digitalRead(buttonpins[i]);
-  
+  for ( int i = 0; i < 6; i++) buttonvalues[i] = 1 - digitalRead(buttonpins[i]);
+
   //the ordering of the buttons are not the same on board as the message
   boardState[0] = buttonvalues[3]; //pin 8
   boardState[1] = buttonvalues[4]; //pin 12
@@ -103,16 +100,16 @@ void sendData() {
 void receiveData() {
   if (Serial.available() > 0) {
     int n = Serial.read();
-    for (int i = 0; i < 5; i++) if (floor(n / 10) == i + 1) emotions[(i + 3) % 5] = n - 10 * floor(n / 10);
+    if (n < 100) for (int i = 0; i < 5; i++) if (floor(n / 10) == i + 1) emotions[(i + 3) % 5] = n - 10 * floor(n / 10);
+    if (n > 100) for (int i = 0; i < 5; i++) if (floor((n - 100) / 10) == i + 1) amps[(i + 3) % 5] = n - 100 - 10 * floor((n - 100) / 10);
   }
 }
 
-void buttonlight(int value) {
+void buttonlight() {
   for (int i = 0; i < 5; i++) {
     if (buttonvalues[i] == 1) {
-      strip.setBrightness(value);
       int j = emotions[i] - 1;
-      strip.setPixelColor(lightlocations[i], strip.Color(emotionColors[j][0], emotionColors[j][1], emotionColors[j][2]));
+      strip.setPixelColor(lightlocations[i], strip.Color(emotionColors[j][0]*(amps[i]/10.00), emotionColors[j][1]*(amps[i]/10.00), emotionColors[j][2]*(amps[i]/10.00)));
       strip.show();
     }
     if (buttonvalues[i] == 0) {
@@ -120,7 +117,6 @@ void buttonlight(int value) {
       strip.show();
     }
   }
-  //strip.show();
 }
 
 
@@ -149,10 +145,8 @@ void color_stripBYTE(uint32_t x) {
 
 
 void buttonlightanimation(int value) {
-  strip.setBrightness(255);
-
   if (value == 1) {
-    d = strip.Color(255, 0, 0);
+    d = strip.Color(0, 0, 0);
   } else if (value == 2) {
     d = strip.Color(0, 255, 0);
   } else {
@@ -162,7 +156,7 @@ void buttonlightanimation(int value) {
   if (buttonvalues[5] == 1) {
     checkpressed = true;
     if (checkpressed) {
-      buttonlight(255);
+      buttonlight();
       delay(500);
       rainbow(1000);
 
@@ -192,13 +186,14 @@ uint32_t Wheel(byte WheelPos) {
 }
 
 void rainbow(uint8_t wait) {
-  uint16_t i, j;
-
-  for (i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
-    strip.show();
-    delay(wait);
-
+  for (int i = 0; i < strip.numPixels(); i++) {
+    if (millis() % 1000 < 500) {
+      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels())) & 255));
+      strip.show();
+    } else {
+      strip.setPixelColor((i + 4 + millis() / 1000) % strip.numPixels(), 0, 0, 0);
+      strip.show();
+    }
   }
 }
 
