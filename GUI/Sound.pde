@@ -10,6 +10,9 @@ SoundFile[] round1 = new SoundFile[5];
 SoundFile[][] round2 = new SoundFile[5][5];
 SoundFile[][] round3 = new SoundFile[5][5];
 
+SoundFile[] ambients = new SoundFile[3];
+SoundFile intro, intro2;
+
 void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
   round1=new SoundFile[]{new SoundFile(this, "1/jarco_1_happy.mp3"), new SoundFile(this, "1/thiemen_1_sad.mp3"), new SoundFile(this, "1/jp_1_angry.mp3"), new SoundFile(this, "1/anil_1_neutral.mp3"), new SoundFile(this, "1/julia_1_passionate.mp3")};
   round2=new SoundFile[][]{
@@ -26,8 +29,15 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
     {new SoundFile(this, "3/jarco_3_neutral.mp3"), new SoundFile(this, "3/thiemen_3_neutral.mp3"), new SoundFile(this, "3/jp_3_neutral.mp3"), new SoundFile(this, "3/anil_3_neutral.mp3"), new SoundFile(this, "3/julia_3_neutral.mp3")}, 
     {new SoundFile(this, "3/jarco_3_passionate.mp3"), new SoundFile(this, "3/thiemen_3_passionate.mp3"), new SoundFile(this, "3/jp_3_passionate.mp3"), new SoundFile(this, "3/anil_3_passionate.mp3"), new SoundFile(this, "3/julia_3_passionate.mp3")} 
   };
-  
-  float amp = 50; // Increase the volume of the soundfiles a bit
+  intro = new SoundFile(this,"intro/1.wav");
+  intro2 = new SoundFile(this,"intro/2.wav");
+  intro.amp(1);
+  intro.play();
+  ambients=new SoundFile[]{new SoundFile(this, "ambient/1.mp3"), new SoundFile(this, "ambient/2.mp3"), new SoundFile(this, "ambient/3.mp3")};
+  ambients[0].amp(0.1);
+  ambients[0].play();
+
+  float amp = 5; // Increase the volume of the soundfiles a bit
   for (SoundFile s : round1) s.amp(amp);
   for (int i=0; i<round2[0].length; i++) for (SoundFile s : round2[i]) s.amp(amp);
   for (int i=0; i<round3[0].length; i++) for (SoundFile s : round3[i]) s.amp(amp);
@@ -44,9 +54,19 @@ class Sound {
   float timerReset = 0;
 
   int currentRound = 1;
-  float talkDelay = 2; // How many seconds between te lines
+  float talkDelay = 1.5; // How many seconds between te lines
+  
+  boolean introBool = false;
+  
+  boolean finished = false;
 
   void run() {
+    if(network.secs > intro.duration() && !introBool && (communication.latestMessage.charAt(7)=='0' || keyPressed)){
+     introBool=true;
+     intro2.amp(10);
+     intro2.play();
+    }
+    
     if (startTalking) {
       int j=0;
       for (int i=0; i<network.totalBrains; i++) if (network.brains.get(i).state==1) { // Put the indexes of the 3 selected brains into an array for convenience.
@@ -65,7 +85,7 @@ class Sound {
         network.brains.get(activeBrains[index]).amplitude=amp.analyze(); // Pass the amplitude of the current sound to the brains
         timer = (millis()-timerReset)/1000.00- ((index==2) ? 0 : talkDelay); // Update the timer
         // If the file has ended
-        if ((currentRound==1 && round1[network.brains.get(activeBrains[index]).emotion-1].duration()<timer) || (currentRound==2 && round2[network.brains.get(activeBrains[index]).emotion-1][activeBrains[index]].duration()<timer)) {
+        if ((currentRound==1 && round1[network.brains.get(activeBrains[index]).emotion-1].duration()<timer) || (currentRound==2 && round2[network.brains.get(activeBrains[index]).emotion-1][activeBrains[index]].duration()<timer) || (currentRound==3 && round3[network.brains.get(activeBrains[index]).emotion-1][activeBrains[index]].duration()<timer)) {
           index++;
           if (index<3) {
             timerReset=millis();
@@ -78,7 +98,11 @@ class Sound {
         for (int i=0; i<5; i++) network.brains.get(i).amplitude=0; // Set the amplitude to 0
         network.updateEmotions(); // Update the emotions
         currentRound++; // Proceed to the next round
+        if(currentRound==4) finished=true;
         currentRound = min(currentRound, 3); // For testing
+        ambients[currentRound-2].stop();
+        ambients[currentRound-1].amp(0.1);
+        ambients[currentRound-1].play();
       }
     }
   }

@@ -9,8 +9,8 @@
 class Network {
   ArrayList<Brain> brains = new ArrayList<Brain>();
   int totalBrains = 5;
-
-  Serial bPort;
+  long secs = 0;
+  long secsRst = 0;
 
   int[][] results = { // Emotion table
     {1, 4, 3, 1, 5}, 
@@ -20,18 +20,21 @@ class Network {
     {5, 4, 1, 5, 5}};
   int[] emotionPoints = {1, -1, -2, 0, 2};
 
-  Network(Serial bPort_) { // brain port
-    bPort=bPort_;
+  Network() { // brain port
     for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5)); // Add the brains
   }
 
   void run() {
+    secs = floor(millis()/1000)-secsRst;
     drawUI();
     if (communication.latestMessage.length()>0) {
-      for (int i=0; i<totalBrains; i++) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
+      for (int i=0; i<totalBrains; i++) if(!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
       int totalSelected = 0;
       for (Brain b : brains) if (b.state==1) totalSelected++;
-      if (communication.latestMessage.charAt(7)=='1' && totalSelected==3 && !sound.talking) sound.startTalking = true;
+      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && (secs > (intro.duration()+intro2.duration())) && !sound.finished) {
+        intro.stop();
+        sound.startTalking = true;
+      }
     }
   }
 
@@ -42,10 +45,10 @@ class Network {
     textSize(50);
     String str = "";
     for (int i=0; i<900; i++)str+=round(random(0, 1));
-    fill(255, 40);
+    fill(255, 30);
     text(str, -width/2, -height/2, width, height);
     strokeWeight(10);
-    stroke(127);
+    stroke(80);
     for (Brain b : brains) for (Brain o : brains) line(b.loc.x, b.loc.y, o.loc.x, o.loc.y);
     noStroke();
     for (Brain b : brains) b.display();
@@ -62,8 +65,30 @@ class Network {
     noStroke();
     fill((total==3) ? color(0, 255, 0) : color(255, 0, 0));
     ellipse(0, 0, 70, 70);
+    
     fill(255);
     text("POINTS: " + getTotalPoints(), -width/2+180, -height/2+100);
+    if(sound.introBool) text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
+    if(!sound.introBool) text("Intro", width/2-180,-height/2+100);
+    textSize(40);
+    fill(255,200);
+    if(sound.introBool) text((sound.currentRound==1) ? "AI" : (sound.currentRound==2) ? "WW III" : "IDENTITY", width/2-180, -height/2+160);
+    
+    for(int i=0;i<5;i++){
+      int[] cols= {285, 120, 235, 50, 0};
+      colorMode(HSB);
+      fill((cols[i]*255)/360,255,255);
+      ellipse(-width/2+50,height/2-250+i*40,20,20);
+      fill(255,200);
+      textSize(20);
+      textAlign(LEFT,CENTER);
+      String[] emos = {"Passionate", "Happy", "Neutral", "Sad", "Angry"};
+      text(emos[i], -width/2+80,height/2-250+i*40);
+    }
+    
+    textAlign(CENTER,CENTER);
+    textSize(100);
+    if(sound.finished) text("DONE", 0,0);
   }
 
   void mousePress() {
@@ -118,6 +143,10 @@ class Network {
     sound.talking=false;
     sound.index=0;
     sound.currentRound=1;
+    intro.stop();
+    intro2.stop();
     for (Brain b : brains) b.amplitude=0;
+    secsRst = floor(millis()/1000);
+    intro.play();
   }
 }
