@@ -51,5 +51,5 @@ void mousePressed() {
 }
 
 void keyPressed() {
-  if( key == 'r') network.reset();
+  network.reset();
 }

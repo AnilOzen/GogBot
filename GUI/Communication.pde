@@ -27,6 +27,7 @@ class Communication {
 
   void writeSwitchBoard() {
     for (int i=1; i<6; i++) sPort.write(i*10+network.brains.get(i-1).emotion);
+    for (int i=1; i<6; i++) sPort.write(int(100 + i*10 + ((sound.talking) ? network.brains.get(i-1).state*1+1 : 4) + network.brains.get(i-1).amplitude*7));
   }
 
   void writeArduinos() {

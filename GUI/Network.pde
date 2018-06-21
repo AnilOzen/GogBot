@@ -9,6 +9,8 @@
 class Network {
   ArrayList<Brain> brains = new ArrayList<Brain>();
   int totalBrains = 5;
+  long secs = 0;
+  long secsRst = 0;
 
   int[][] results = { // Emotion table
     {1, 4, 3, 1, 5}, 
@@ -23,12 +25,13 @@ class Network {
   }
 
   void run() {
+    secs = floor(millis()/1000)-secsRst;
     drawUI();
     if (communication.latestMessage.length()>0) {
       for (int i=0; i<totalBrains; i++) if(!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
       int totalSelected = 0;
       for (Brain b : brains) if (b.state==1) totalSelected++;
-      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && (millis()/1000 > (intro.duration()+intro2.duration())) && !sound.finished) {
+      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && (secs > (intro.duration()+intro2.duration())) && !sound.finished) {
         intro.stop();
         sound.startTalking = true;
       }
@@ -140,6 +143,10 @@ class Network {
     sound.talking=false;
     sound.index=0;
     sound.currentRound=1;
+    intro.stop();
+    intro2.stop();
     for (Brain b : brains) b.amplitude=0;
+    secsRst = floor(millis()/1000);
+    intro.play();
   }
 }

@@ -31,7 +31,7 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
   };
   intro = new SoundFile(this,"intro/1.wav");
   intro2 = new SoundFile(this,"intro/2.wav");
-  intro.amp(10);
+  intro.amp(1);
   intro.play();
   ambients=new SoundFile[]{new SoundFile(this, "ambient/1.mp3"), new SoundFile(this, "ambient/2.mp3"), new SoundFile(this, "ambient/3.mp3")};
   ambients[0].amp(0.1);
@@ -61,7 +61,7 @@ class Sound {
   boolean finished = false;
 
   void run() {
-    if(millis()/1000 > intro.duration() && !introBool && (communication.latestMessage.charAt(7)=='0' || keyPressed)){
+    if(network.secs > intro.duration() && !introBool && (communication.latestMessage.charAt(7)=='0' || keyPressed)){
      introBool=true;
      intro2.amp(10);
      intro2.play();
