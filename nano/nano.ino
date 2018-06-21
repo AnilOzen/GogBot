@@ -11,7 +11,7 @@
 
 #define NUM_LEDS   60
 #define BRIGHTNESS  255
-#define METO_SIZE 8
+#define METO_SIZE 10
 
 #define RED 0xFF0000
 #define YELLOW 0xFFFF00
@@ -22,9 +22,9 @@
 byte rr = 0xff;
 byte gg = 0xff;
 byte bb = 0xff;
-
+boolean checkbool = true;
 int currentValue = 0;
-int values[3] = {0,0,0};
+int values[3] = {0, 0, 0};
 
 int a_BLUE;
 char val;
@@ -48,7 +48,14 @@ void loop() {
   communication();
   control();
 }
+void strip_disable() {
+  for ( int i = 0; i < NUM_LEDS; i++) {
+    strip.setBrightness(0);
 
+  }
+  strip.show();
+
+}
 
 
 void showStrip() {
@@ -75,6 +82,9 @@ void setPixel(int Pixel, byte red, byte green, byte blue) {
 }
 
 void meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTrailDecay, boolean meteorRandomDecay, int SpeedDelay) {
+
+  
+
   for (int i = 0; i < NUM_LEDS + NUM_LEDS; i++) {
     // fade brightness all LEDs one step
     for (int j = 0; j < NUM_LEDS; j++) {
@@ -82,16 +92,24 @@ void meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTra
         fadeToBlack(j, meteorTrailDecay );
       }
     }
-    // draw meteor
+    
     for (int j = 0; j < meteorSize; j++) {
       if ( ( i - j < NUM_LEDS) && (i - j >= 0) ) {
         setPixel(i - j, red, green, blue);
       }
     }
+    //maybe need to re-read comm
+//    if (values[0] != 2) 
+//      break;
     showStrip();
+    communication();
+    if (values[0] != 2)
+      break;
     delay(SpeedDelay);
   }
+
 }
+
 
 void fadeToBlack(int ledNo, byte fadeValue) {
 
@@ -149,13 +167,13 @@ void communication() {
   if (Serial.available())
   { // If data is available to read,
     do {
-       val = Serial.read(); // read it and store it in val
+      val = Serial.read(); // read it and store it in val
       if (val != -1) {
         inputread = inputread + val;
       }
-      
+
     }
-    while( val != -1);
+    while ( val != -1);
   }
 
   if ( inputread.length() == 5) {
@@ -167,70 +185,41 @@ void communication() {
   delay(10); //TODO We need to check if this is actually necessary
 }
 
-
 void control() {
+  color_rgbstrip(values[2], values[2], values[2]);
 
   if (values[0] == 1) {
-
+    showStrip();
     switch (values[1]) {
-      case 1:   //red
-        color_rgbstrip(values[2], 0, 0);              //red
-        break;
-      case 2:
-        color_rgbstrip(values[2], values[2], 0);             //yellow
-        break;
-      case 3:
-        color_rgbstrip(values[2], 0, values[2]);             //purple
-        break;
-      case 4:
-        color_rgbstrip(0, values[2], 0);              // green
-        break;
-      case 5:
-        color_rgbstrip(0, 0, values[2]);               //blue
-        break;
-    }
-
-  } else if ( values[0] == 2) {
-
-    switch (values[1]) {
+        checkbool == false;
       case 1:
-        color_strip(RED, 255);              //red
+        color_strip(RED, values[2]);             //red
         break;
       case 2:
-        color_strip(YELLOW, 255);             //yellow
+        color_strip(YELLOW, values[2]);            //yellow
         break;
       case 3:
-        color_strip(PURPLE, 255);             //purple
+        color_strip(PURPLE, values[2]);            //purple
         break;
       case 4:
-        color_strip(GREEN, 255);              // green
+        color_strip(GREEN, values[2]);              // green
         break;
       case 5:
-        color_strip(BLUE, 255);              //blue
+        color_strip(BLUE, values[2]);              //blue
         break;
     }
-  } else if (values[0] == 3) {
+  }
+  else if ( values[0] == 2) {
 
-    int zz = random(1, 6);
-    if ( zz != 5) {
-      rr = 0xff;
-      gg = 0xff;
-      bb = 0xff;
-    }
-    else {
-      rr = 0xff;
-      gg = 0x00;
-      bb = 0x00;
-    }
-    meteorRain( rr, gg, bb, METO_SIZE, random(60, 150), true, 50);
+    rr = 0xff;
+    gg = 0xff;
+    bb = 0xff;
+    //color_strip(YELLOW,255);
+    
+    meteorRain( rr, gg, bb, METO_SIZE, random(120, 300), true, 2 );
+    // strip.show();
   }
 }
-
-
-
-
-
-
 
 
 

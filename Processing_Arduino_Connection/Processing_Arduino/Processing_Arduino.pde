@@ -1,15 +1,8 @@
-//This Code will form the basis for the connection to the Arduino. 
-
-
-
-
-//=====================================================================================
-//Code is currently in development. Code needs to be improved!!!
-//======================================================================================
-
 import processing.serial.*; 
 Serial Nano1, Nano2, Nano3, Nano4, Nano5;       // all the Arduino Nano boards
 Serial Arduino_CB;         //Arduino buttonboard
+Serial Arduino_DB;         //Arduino buttonboard
+
 Serial Arduino_OF;         //Arduino General
 int NEWLINE = 10;
 char header[] = {'X', 'Y', 'Z', 'U', 'V', 'Q', 'C'};           
@@ -21,6 +14,7 @@ void setup()
 {
   size(600, 100);
   println("Available serial ports:");
+  
   for (int i = 0; i<Serial.list().length; i++) 
   { 
     print("[" + i + "] ");
@@ -33,8 +27,14 @@ void setup()
   //Nano3 = new Serial(this, Serial.list()[0], 9600);
   //Nano4 = new Serial(this, Serial.list()[0], 9600);
   //Nano5 = new Serial(this, Serial.list()[0], 9600);
-  //Arduino_CB = new Serial(this, Serial.list()[0], 9600);
-  Arduino_CB = new Serial(this, "/dev/cu.usbmodem1411", 9600);
+  Arduino_CB = new Serial(this, Serial.list()[0], 9600);
+  Arduino_CB.bufferUntil(' ');
+  Arduino_DB = new Serial(this, Serial.list()[1], 9600);
+  Arduino_DB.bufferUntil(' ');
+  //Arduino_CB.bufferUntil(' ');
+  //Arduino_DB = new Serial(this, Serial.list()[1], 9600);
+  //Arduino_DB.bufferUntil(' ');
+  // Arduino_CB = new Serial(this, "/dev/cu.usbmodem1411", 9600);
   //Arduino_OF = new Serial(this, Serial.list()[0], 9600);
 }
 
@@ -52,18 +52,34 @@ void draw() {
   //Data_Arduino();
   //println(pinDATA[6]);
   //TODO fix the flicker because of button ring
-  //buttonRing(Arduino_CB,1);
-  commandArduino(Arduino_CB, 1, 2, (int)map(mouseX,0, width,0, 255));
-  /*
-  String out ="";
-  out+=str(1);
-  out+=str(2);
-  out+=nf(255,3); //str(255); 
-  
-  Arduino_CB.write(out);
-  */
-}
+  //buttonRing(Arduino_CB,1);2
+  if (mouseX>width/2) {
+   commandArduino(Arduino_CB, 2, 6, 255);
+   commandArduino(Arduino_DB, 2, 6, 255);
 
+
+    //println("Idle");
+  } else {
+    commandArduino(Arduino_CB, 1, 5, 255);
+    commandArduino(Arduino_DB, 1, 5, 255);
+
+
+    
+    //println("Selection");
+  }
+}
+//println("1");
+//}
+//commandArduino(Arduino_CB, 2,2,(int)map(mouseX,0,width,0,255));
+
+/*
+  String out ="";
+ out+=str(1);
+ out+=str(2);
+ out+=nf(255,3); //str(255); 
+ 
+ Arduino_CB.write(out);
+ */
 
 
 
@@ -118,18 +134,17 @@ void Receive_Arduino(int serial) {
 //===================================================
 
 
-void commandArduino(Serial Arduino, int value1, int value2 , int value3) {   // for this function the value represents the brightness of the ledstrips
+void commandArduino(Serial Arduino_JP, int value1, int value2, int value3) {   // for this function the value represents the brightness of the ledstrips
 
   String out ="";
   out+=str(value1);
   out+=str(value2);
-  out+=nf(value3,3); //str(255); 
+  out+=  nf(value3, 3); //str(255); 
   //out = "12250"; 
   //out+='\n';
+
+  Arduino_JP.write(out);
   
-  Arduino_CB.write(out);
-   
-   
 }
 
 
