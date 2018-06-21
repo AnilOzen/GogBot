@@ -32,13 +32,12 @@ class Communication {
 
   void writeArduinos() {
     int[] col = {4, 2, 1, 5, 3};
-    for (int i=0; i<1; i++) {
-      //commandArduino(i, 3-network.brains.get(i).state, col[network.brains.get(i).emotion-1], 255);
-      commandArduino(i, 1, col[network.brains.get(i).emotion-1], int(network.brains.get(i).amplitude*255.00));
-      //commandArduino(i, 1, col[network.brains.get(i).emotion-1], 127);
-      //if (sound.talking) commandArduino(i, 1, col[network.brains.get(i).emotion-1], int(network.brains.get(i).amplitude*255.00));
-      commandArduino(i, 2, col[network.brains.get(i).emotion-1], (sound.talking) ? int(network.brains.get(i).amplitude*255.00) : 255*network.brains.get(i).state);
-      if (!sound.talking) commandArduino(i, 3, col[network.brains.get(i).emotion-1], (sound.talking) ? int(network.brains.get(i).amplitude*255.00) : 255*network.brains.get(i).state);
+    for (int i=0; i<5; i++) {
+      if (sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 127+int(network.brains.get(i).amplitude*127.00));
+      if (sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 127+int(network.brains.get(i).amplitude*127.00));
+
+      if (!sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 255);
+      if (!sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 255);
     }
   }
 
