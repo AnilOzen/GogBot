@@ -13,14 +13,14 @@ Serial[] arduinoPorts = new Serial[5]; // Led-Arduion ports
 Serial sPort; // Switchboard port
 
 void setup() {
-  //size(800, 800);
-  fullScreen(FX2D);
+  size(800, 800);
+  //fullScreen(FX2D);
   pixelDensity(1);
-
+  
   sPort = new Serial(this, Serial.list()[0], 9600);
   //arduinoPorts[0] = new Serial(this, Serial.list()[0], 9600);
-  //arduinoPorts[1] = new Serial(this, Serial.list()[2], 9600);
-  //arduinoPorts[2] = new Serial(this, Serial.list()[3], 9600);
+  //arduinoPorts[1] = new Serial(this, Serial.list()[1], 9600);
+  //arduinoPorts[2] = new Serial(this, Serial.list()[2], 9600);
   //arduinoPorts[0] = new Serial(this, Serial.list()[4], 9600);
   //arduinoPorts[0] = new Serial(this, Serial.list()[5], 9600);
 
@@ -51,5 +51,5 @@ void mousePressed() {
 }
 
 void keyPressed() {
-  network.reset();
+  if(key == ' ') network.reset();
 }

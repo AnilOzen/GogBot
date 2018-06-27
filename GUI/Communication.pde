@@ -28,13 +28,14 @@ class Communication {
   void writeSwitchBoard() {
     for (int i=1; i<6; i++) sPort.write(i*10+network.brains.get(i-1).emotion);
     for (int i=1; i<6; i++) sPort.write(int(100 + i*10 + ((sound.talking) ? network.brains.get(i-1).state*1+1 : 4) + network.brains.get(i-1).amplitude*7));
+    sPort.write((sound.talking) ? 202 : 201);
   }
 
   void writeArduinos() {
     int[] col = {4, 2, 1, 5, 3};
-    for (int i=0; i<5; i++) {
-      if (sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 127+int(network.brains.get(i).amplitude*127.00));
-      if (sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 127+int(network.brains.get(i).amplitude*127.00));
+    for (int i=0; i<3; i++) {
+      if (sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 40+int(network.brains.get(i).amplitude*210.00));
+      if (sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 40+int(network.brains.get(i).amplitude*210.00));
 
       if (!sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 255);
       if (!sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 255);

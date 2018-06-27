@@ -28,10 +28,10 @@ class Network {
     secs = floor(millis()/1000)-secsRst;
     drawUI();
     if (communication.latestMessage.length()>0) {
-      for (int i=0; i<totalBrains; i++) if(!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
+      for (int i=0; i<totalBrains; i++) if (!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
       int totalSelected = 0;
       for (Brain b : brains) if (b.state==1) totalSelected++;
-      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && (secs > (intro.duration()+intro2.duration())) && !sound.finished) {
+      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && sound.introBool2 && !sound.finished) {
         intro.stop();
         sound.startTalking = true;
       }
@@ -65,30 +65,40 @@ class Network {
     noStroke();
     fill((total==3) ? color(0, 255, 0) : color(255, 0, 0));
     ellipse(0, 0, 70, 70);
-    
-    fill(255);
-    text("POINTS: " + getTotalPoints(), -width/2+180, -height/2+100);
-    if(sound.introBool) text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
-    if(!sound.introBool) text("Intro", width/2-180,-height/2+100);
-    textSize(40);
-    fill(255,200);
-    if(sound.introBool) text((sound.currentRound==1) ? "AI" : (sound.currentRound==2) ? "WW III" : "IDENTITY", width/2-180, -height/2+160);
-    
-    for(int i=0;i<5;i++){
+
+    for (int i=0; i<5; i++) {
       int[] cols= {285, 120, 235, 50, 0};
       colorMode(HSB);
-      fill((cols[i]*255)/360,255,255);
-      ellipse(-width/2+50,height/2-250+i*40,20,20);
-      fill(255,200);
-      textSize(20);
-      textAlign(LEFT,CENTER);
-      String[] emos = {"Passionate", "Happy", "Neutral", "Sad", "Angry"};
-      text(emos[i], -width/2+80,height/2-250+i*40);
+      fill((cols[i]*255)/360, 255, 255);
+      rect(-width/2+60, -height/2+60+i*40, 100, 40);
     }
-    
-    textAlign(CENTER,CENTER);
+
+    fill(255);
+    rect(-width/2+60, -height/2+60+map(-(getTotalPoints()), -10, 10, 0, 200), 100, 10);
+    text(getTotalPoints(), -width/2+200, -height/2+60+map(-(getTotalPoints()), -10, 10, 0, 200));
+
+    fill(255);
+    if (sound.introBool) text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
+    if (!sound.introBool) text("Intro", width/2-180, -height/2+100);
+    textSize(40);
+    fill(255, 200);
+    if (sound.introBool) text((sound.currentRound==1) ? "AI" : (sound.currentRound==2) ? "WW III" : "IDENTITY", width/2-180, -height/2+160);
+
+    for (int i=0; i<5; i++) {
+      int[] cols= {285, 120, 235, 50, 0};
+      colorMode(HSB);
+      fill((cols[i]*255)/360, 255, 255);
+      ellipse(-width/2+50, height/2-250+i*40, 20, 20);
+      fill(255, 200);
+      textSize(20);
+      textAlign(LEFT, CENTER);
+      String[] emos = {"Passionate", "Happy", "Neutral", "Sad", "Angry"};
+      text(emos[i], -width/2+80, height/2-250+i*40);
+    }
+
+    textAlign(CENTER, CENTER);
     textSize(100);
-    if(sound.finished) text("DONE", 0,0);
+    if (sound.finished) text("DONE", 0, 0);
   }
 
   void mousePress() {
@@ -148,5 +158,9 @@ class Network {
     for (Brain b : brains) b.amplitude=0;
     secsRst = floor(millis()/1000);
     intro.play();
+    sound.introBool = false;
+    sound.finished=false;
+    sound.introBool2 = false;
+    sound.intro2secs = 0;
   }
 }
