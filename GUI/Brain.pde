@@ -15,6 +15,7 @@ class Brain {
 
   void updateEmotion(int newEmotion){
     emotion = newEmotion;
+    clr=emotionClrs[emotion-1];
   }
 
   void display() {
