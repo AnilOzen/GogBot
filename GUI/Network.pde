@@ -49,7 +49,7 @@ class Network {
       for (int i=0; i<totalBrains; i++) if (!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
       int totalSelected = 0;
       for (Brain b : brains) if (b.state==1) totalSelected++;
-      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && sound.introBool2 && !sound.finished) {
+      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && !sound.introBool2 && !sound.finished) {
         intro.stop();
         sound.startTalking = true;
       }

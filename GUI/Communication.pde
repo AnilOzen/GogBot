@@ -32,21 +32,25 @@ class Communication {
   }
 
   void writeArduinos() {
-    int[] col = {4, 2, 1, 5, 3};
-    for (int i=0; i<3; i++) {
-      if (sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 40+int(network.brains.get(i).amplitude*210.00));
-      if (sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 40+int(network.brains.get(i).amplitude*210.00));
+    for (int i=0; i<1; i++) {
+      colorMode(RGB);
+      float ampl = floor(55+int(network.brains.get(i).amplitude*200.00));
+      ampl/=40;
 
-      if (!sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, col[network.brains.get(i).emotion-1], 255);
-      if (!sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, col[network.brains.get(i).emotion-1], 255);
+      if (sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, int(red(network.brains.get(i).clr)/ampl), int(green(network.brains.get(i).clr)/ampl), int(blue(network.brains.get(i).clr)/ampl));
+      if (sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, 255, 255, 255);
+
+      if (!sound.talking && network.brains.get(i).state==1) commandArduino(i, 1, (int) red(network.brains.get(i).clr), (int) green(network.brains.get(i).clr), (int) blue(network.brains.get(i).clr));
+      if (!sound.talking && network.brains.get(i).state==0) commandArduino(i, 2, (int) red(network.brains.get(i).clr), (int) green(network.brains.get(i).clr), (int) blue(network.brains.get(i).clr));
     }
   }
 
-  void commandArduino(int ard, int value1, int value2, int value3) {   // for this function the value represents the brightness of the ledstrips
+  void commandArduino(int ard, int value1, int r, int g, int b) {   // for this function the value represents the brightness of the ledstrips
     String out = "";
     out+=str(value1);
-    out+=str(value2);
-    out+=nf(value3, 3);
+    out+=nf(r, 3);
+    out+=nf(g, 3);
+    out+=nf(b, 3);
     arduinoPorts[ard].write(out);
   }
 }
