@@ -33,7 +33,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, leddatapin, NEO_GRB + NEO_
 
 void setup() {
 
-  Serial.begin(9600);
+  Serial.begin(19200);
   strip.begin();
   strip.setBrightness(BRIGHTNESS);
   strip.show();
@@ -214,12 +214,14 @@ void communication() {
     values[2] = inputread.substring(4,7).toInt(); //from char(2) until the end
     values[3] = inputread.substring(7,10).toInt();
   }
+  inputread = "";
 
-  delay(10); //TODO We need to check if this is actually necessary
+  delay(10); //maybe try millis
 }
 void control() {
+  color_rgbstrip(values[1], values[2], values[3]);
   if (values[0] == 1) {
-    color_rgbstrip(values[1], values[2], values[3]);
+    
    color_strip2(values[1],values[2],values[3]);
    //uint32_t test= strip.Color(values[1], values[2],values[3]);
  // color_strip(YELLOW,255);
