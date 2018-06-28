@@ -27,10 +27,10 @@ void setup()
   //Nano3 = new Serial(this, Serial.list()[0], 9600);
   //Nano4 = new Serial(this, Serial.list()[0], 9600);
   //Nano5 = new Serial(this, Serial.list()[0], 9600);
-  Arduino_CB = new Serial(this, Serial.list()[0], 9600);
+  Arduino_CB = new Serial(this, Serial.list()[32], 9600);
   Arduino_CB.bufferUntil(' ');
-  Arduino_DB = new Serial(this, Serial.list()[1], 9600);
-  Arduino_DB.bufferUntil(' ');
+  //Arduino_DB = new Serial(this, Serial.list()[1], 9600);
+  //Arduino_DB.bufferUntil(' ');
   //Arduino_CB.bufferUntil(' ');
   //Arduino_DB = new Serial(this, Serial.list()[1], 9600);
   //Arduino_DB.bufferUntil(' ');
@@ -54,14 +54,14 @@ void draw() {
   //TODO fix the flicker because of button ring
   //buttonRing(Arduino_CB,1);2
   if (mouseX>width/2) {
-   commandArduino(Arduino_CB, 2, 6, 255);
-   commandArduino(Arduino_DB, 2, 6, 255);
+   commandArduino(Arduino_CB, 1,255,255,255);
+ //  commandArduino(Arduino_DB, 2, 6, 255);
 
 
     //println("Idle");
   } else {
-    commandArduino(Arduino_CB, 1, 5, 255);
-    commandArduino(Arduino_DB, 1, 5, 255);
+    //commandArduino(Arduino_CB, 1, 5, 255);
+   // commandArduino(Arduino_DB, 1, 5, 255);
 
 
     
@@ -134,13 +134,15 @@ void Receive_Arduino(int serial) {
 //===================================================
 
 
-void commandArduino(Serial Arduino_JP, int value1, int value2, int value3) {   // for this function the value represents the brightness of the ledstrips
+void commandArduino(Serial Arduino_JP, int value1, int value2, int value3, int value4) {   // for this function the value represents the brightness of the ledstrips
 
   String out ="";
   out+=str(value1);
-  out+=str(value2);
-  out+=  nf(value3, 3); //str(255); 
-  //out = "12250"; 
+  out+=nf(value2,3);
+  out+=nf(value3, 3); //str(255); 
+  out+=nf(value4, 3);
+  
+//  out = "1255255255"; 
   //out+='\n';
 
   Arduino_JP.write(out);
