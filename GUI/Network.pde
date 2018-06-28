@@ -7,6 +7,8 @@
  */
 
 class Network {
+  int state = 0;
+
   ArrayList<Brain> brains = new ArrayList<Brain>();
   int totalBrains = 5;
   long secs = 0;
@@ -20,11 +22,27 @@ class Network {
     {5, 4, 1, 5, 5}};
   int[] emotionPoints = {1, -1, -2, 0, 2};
 
+  ArrayList<Integer> buttonHist = new ArrayList<Integer>();
+
   Network() { // brain port
     for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5)); // Add the brains
+    for (int i=0; i<10; i++) buttonHist.add(1);
   }
 
   void run() {
+    if (state == 0) {
+      if (secs > (hint1.duration()+2)) {
+        secsRst = floor(millis()/1000);
+        hint1.play();
+      }
+      if (frameCount % 5 == 0) {
+        buttonHist.remove(0);
+        buttonHist.add((communication.latestMessage.charAt(7)=='1') ? 1 : 0);
+      }
+      boolean pressed2secs = true;
+      for (Integer i : buttonHist) if (i==1) pressed2secs = false;
+      if (pressed2secs) begin();
+    }
     secs = floor(millis()/1000)-secsRst;
     drawUI();
     if (communication.latestMessage.length()>0) {
@@ -111,8 +129,8 @@ class Network {
 
     // Execute if the button is pressed and the total selected brains is 3
     if (dist(mouseX, mouseY, width/2, height/2)<70 && total==3) {
-      sound.startTalking = true;
-      //updateEmotions();
+      //sound.startTalking = true;
+      updateEmotions();
     }
   }
 
@@ -157,10 +175,20 @@ class Network {
     intro2.stop();
     for (Brain b : brains) b.amplitude=0;
     secsRst = floor(millis()/1000);
-    intro.play();
+    //intro.play();
     sound.introBool = false;
     sound.finished=false;
     sound.introBool2 = false;
     sound.intro2secs = 0;
+    state = 0;
+    buttonHist = new ArrayList<Integer>();
+    for(int i=0;i<10;i++) buttonHist.add(1);
+  }
+
+  void begin() {
+    hint1.stop();
+    reset();
+    intro.play();
+    state = 1;
   }
 }

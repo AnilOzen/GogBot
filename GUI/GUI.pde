@@ -28,8 +28,6 @@ void setup() {
   network = new Network();
   //server = new Server(); // The app server
 
-  animation = new Animation();
-
   loadSoundFiles();
   sound = new Sound();
   amp = new Amplitude(this);
@@ -38,8 +36,6 @@ void setup() {
 void draw() {
   network.run();
   sound.run();
-
-  //animation.run();
 
   communication.readSwitchBoard();
   communication.writeSwitchBoard();

@@ -12,6 +12,7 @@ SoundFile[][] round3 = new SoundFile[5][5];
 
 SoundFile[] ambients = new SoundFile[3];
 SoundFile intro, intro2;
+SoundFile hint1, hint2;
 
 /*
 jarco - lefika
@@ -37,10 +38,12 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
   };
   intro = new SoundFile(this, "intro/intro1.wav");
   intro2 = new SoundFile(this, "intro/intro2.wav");
-  intro.play();
+  //intro.play();
   ambients=new SoundFile[]{new SoundFile(this, "ambient/1.mp3"), new SoundFile(this, "ambient/2.mp3"), new SoundFile(this, "ambient/3.mp3")};
   for (int i=0; i<ambients.length; i++) ambients[i].amp(0.05);
   ambients[0].play();
+  
+  hint1= new SoundFile(this, "hints/start.mp3");
 
   //float amp = 5; // Increase the volume of the soundfiles a bit
   //for (SoundFile s : round1) s.amp(amp);
