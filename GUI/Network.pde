@@ -26,7 +26,7 @@ class Network {
 
   Network() { // brain port
     for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5)); // Add the brains
-    for (int i=0; i<10; i++) buttonHist.add(1);
+    for (int i=0; i<20; i++) buttonHist.add(1);
   }
 
   void run() {
@@ -49,7 +49,7 @@ class Network {
       for (int i=0; i<totalBrains; i++) if (!sound.talking) brains.get(i).state = (communication.latestMessage.charAt(i+1)=='1') ? 1 : 0;
       int totalSelected = 0;
       for (Brain b : brains) if (b.state==1) totalSelected++;
-      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && !sound.introBool2 && !sound.finished) {
+      if (communication.latestMessage.charAt(7)=='0' && totalSelected==3 && !sound.talking && sound.introBool2 && !sound.finished) {
         intro.stop();
         sound.startTalking = true;
       }
@@ -96,8 +96,8 @@ class Network {
     text(getTotalPoints(), -width/2+200, -height/2+60+map(-(getTotalPoints()), -10, 10, 0, 200));
 
     fill(255);
-    if (sound.introBool) text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
-    if (!sound.introBool) text("Intro", width/2-180, -height/2+100);
+    if (sound.introBool2) text("ROUND: " + sound.currentRound, width/2-180, -height/2+100);
+    if (!sound.introBool2) text("Intro", width/2-180, -height/2+100);
     textSize(40);
     fill(255, 200);
     if (sound.introBool) text((sound.currentRound==1) ? "AI" : (sound.currentRound==2) ? "WW III" : "IDENTITY", width/2-180, -height/2+160);
@@ -182,12 +182,15 @@ class Network {
     sound.intro2secs = 0;
     state = 0;
     buttonHist = new ArrayList<Integer>();
-    for(int i=0;i<10;i++) buttonHist.add(1);
+    for (int i=0; i<20; i++) buttonHist.add(1);
+    for (int i=0; i<5; i++) brains.get(i).clr = brains.get(i).emotionClrs[i];
+    hint1.stop();
+    hint1.play();
   }
 
   void begin() {
-    hint1.stop();
     reset();
+    hint1.stop();
     intro.play();
     state = 1;
   }

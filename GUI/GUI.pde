@@ -19,11 +19,11 @@ void setup() {
   
   
   sPort = new Serial(this, Serial.list()[0], 9600);
-  arduinoPorts[0] = new Serial(this, Serial.list()[35], 19200);
-  arduinoPorts[1] = new Serial(this, Serial.list()[36], 19200);
-  arduinoPorts[2] = new Serial(this, Serial.list()[37], 19200);
-  arduinoPorts[3] = new Serial(this, Serial.list()[33], 19200);
-  arduinoPorts[4] = new Serial(this, Serial.list()[34], 19200);
+  //arduinoPorts[0] = new Serial(this, Serial.list()[35], 19200);
+  //arduinoPorts[1] = new Serial(this, Serial.list()[36], 19200);
+  //arduinoPorts[2] = new Serial(this, Serial.list()[37], 19200);
+  //arduinoPorts[3] = new Serial(this, Serial.list()[33], 19200);
+  //arduinoPorts[4] = new Serial(this, Serial.list()[34], 19200);
 
   communication = new Communication();
   network = new Network();
@@ -40,7 +40,7 @@ void draw() {
 
   communication.readSwitchBoard();
   communication.writeSwitchBoard();
-  communication.writeArduinos();
+  //communication.writeArduinos();
 }
 
 void mousePressed() {

@@ -36,7 +36,7 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
     {new SoundFile(this, "3/lefika_3_neutral.mp3"), new SoundFile(this, "3/thiemen_3_neutral.mp3"), new SoundFile(this, "3/jp_3_neutral.mp3"), new SoundFile(this, "3/radhika_3_neutral.mp3"), new SoundFile(this, "3/hannah_3_neutral.mp3")}, 
     {new SoundFile(this, "3/lefika_3_passionate.mp3"), new SoundFile(this, "3/thiemen_3_passionate.mp3"), new SoundFile(this, "3/jp_3_passionate.mp3"), new SoundFile(this, "3/radhika_3_passionate.mp3"), new SoundFile(this, "3/hannah_3_passionate.mp3")} 
   };
-  intro = new SoundFile(this, "intro/intro1.wav");
+  intro = new SoundFile(this, "intro/intro1.mp3");
   intro2 = new SoundFile(this, "intro/intro2.wav");
   //intro.play();
   ambients=new SoundFile[]{new SoundFile(this, "ambient/1.mp3"), new SoundFile(this, "ambient/2.mp3"), new SoundFile(this, "ambient/3.mp3")};
@@ -44,6 +44,7 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
   ambients[0].play();
   
   hint1= new SoundFile(this, "hints/start.mp3");
+  hint1.play();
 
   //float amp = 5; // Increase the volume of the soundfiles a bit
   //for (SoundFile s : round1) s.amp(amp);
