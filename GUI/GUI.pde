@@ -1,3 +1,5 @@
+//For GogBot
+
 import processing.serial.*;
 import processing.sound.*;
 import processing.net.*;
@@ -38,8 +40,6 @@ void setup() {
 }
 
 void draw() {
-
-
   network.run();
   sound.run();
   
