@@ -32,7 +32,7 @@ class Communication {
   }
 
   void writeArduinos() {
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<4; i++) {
       colorMode(RGB);
       float ampl = floor(55+int(network.brains.get(i).amplitude*200.00));
       ampl/=40;
