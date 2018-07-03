@@ -23,15 +23,19 @@ class Network {
   int[] emotionPoints = {1, -1, -2, 0, 2};
 
   ArrayList<Integer> buttonHist = new ArrayList<Integer>();
+  int prevScore = 0;
 
   Network() { // brain port
     for (int i=0; i<totalBrains; i++) brains.add(new Brain(i%5)); // Add the brains
-    for (int i=0; i<20; i++) buttonHist.add(1);
+    for (int i=0; i<15; i++) buttonHist.add(1);
   }
 
   void run() {
     if (state == 0) {
-      if (secs > (hint1.duration()+2)) {
+      send(1);
+animation.reset();
+      if (secs > (hint1.duration())) {
+        hint1.stop();
         secsRst = floor(millis()/1000);
         hint1.play();
       }
@@ -42,6 +46,8 @@ class Network {
       boolean pressed2secs = true;
       for (Integer i : buttonHist) if (i==1) pressed2secs = false;
       if (pressed2secs) begin();
+    } else {
+      send(0);
     }
     secs = floor(millis()/1000)-secsRst;
     drawUI();
@@ -189,6 +195,7 @@ class Network {
   }
 
   void begin() {
+    animation.reset();
     reset();
     hint1.stop();
     intro.play();

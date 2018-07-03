@@ -1,92 +1,174 @@
-/*
- 1=Happy
- 2=Sad
- 3=Angry
- 4=Neutral
- 5=Passionate
- */
- 
-int f = 0;
-int m = 50;
-
 class Animation {
-  ArrayList<AniBrain> brains = new ArrayList<AniBrain>();
-  ArrayList<String> combinations = new ArrayList<String>();
-  int totalBrains = 5;
+  int tmr = 0;
+  int tmrRst = 0;
+  boolean ani1bool = true;
+  boolean ani2bool = true;
 
-  int[] occ = {0, 0, 0, 0, 0};
+  boolean a1=true;
+  boolean a2=false;
 
-  int[][] results = { // Emotion table
-    {1, 4, 3, 1, 5}, 
-    {4, 2, 2, 2, 4}, 
-    {3, 2, 3, 3, 1}, 
-    {1, 2, 3, 4, 5}, 
-    {5, 4, 1, 5, 5}};
-
-  int n = 0;
-
-  Animation() {
-    for (int i=0; i<totalBrains; i++) brains.add(new AniBrain(i%5)); // Add the brains
-    makeCombinations(5, 3);
-  }
+  int t = 5;
 
   void run() {
-    noStroke();
-    //fill(255, 30);
-    //rect(0, 0, width, height);
-    if (n%m==1 && f<1) select3();
-    if (n%m==ceil(m/2) && f<1) updateEmotions();
-    translate(width/2.6, height/3);
-    scale(1);
-    for (AniBrain b : brains) b.display();
-    if (n%m==0 && f<1) check();
-    f--;
-    if (f==m-20) for (int i=0; i<5; i++) brains.get(i).emotion=i+1;
-    n++;
-  }
+    colorMode(RGB);
+    tmr = millis()-tmrRst;
 
-  void check() {
-    if (brains.get(0).emotion == brains.get(1).emotion && brains.get(1).emotion == brains.get(2).emotion && brains.get(2).emotion == brains.get(3).emotion && brains.get(3).emotion == brains.get(4).emotion) f=m*2;
-  }
+    if (a1) {
+      if (tmr<34000) ani0();
+      if (tmr>34000 && tmr<38000) ani1(tmr-34000, 38000-tmr);
+      if (tmr>38500 && tmr<42000) ani2(tmr-38500, 42000-tmr);
+      if (tmr>47000 && tmr<50000) ani3();
+      if (tmr>51000) a1=false;
+    }
 
-  void select3() {
-    for (AniBrain b : brains) b.state=0;
-    int rand = floor(random(10));
-    for (int i=0; i<3; i++) brains.get(Integer.parseInt(combinations.get(rand).charAt(i)+"")-1).state=1;
-  }
+    if (sound.introBool && !a2) {
+      reset();
+      a2 = true;
+    }
 
-  void makeCombinations(int total, int set) {
-    ArrayList<Integer> c = new ArrayList<Integer>(); // Make an ArrayList to store the numbers
-    for (int i=1; i<=set; i++) c.add(min(i, set-1)); // Fill the ArrayList with numbers 1,2,... ,set
-    while (c.get(0)<=total-set) for (int n=set-1; n>=0; n--) if (c.get(n)<(total-(set-1-n))) { // Starting from the end, go to the nth element in the array. If it is equal to total, go to the element before
-      for (int i=n; i<set; i++) c.set(i, c.get(n)+max(1, (i-n))); // If it is less than total, increase it by one, and all numbers after that number should be set to this number + the indexes after this index
-      String comb = "";
-      for (Integer i : c) comb+=i;
-      combinations.add(comb); // Print out the combination
-      break; // Stop this loop and go to the next number
+    if (a2) {
+      if (tmr<6000) ani4();
+      if (tmr>8000 && tmr<10000) ani5(tmr-8000, 10000-tmr);
+      if (tmr>13000 && tmr<18000) ani8(tmr-13000, 18000-tmr);
+      if (tmr>24000 && tmr<30000) ani6(tmr-24000, 30000-tmr);
+      if (tmr>34000 && tmr<37000) ani7(tmr-34000, 37000-tmr);
     }
   }
 
-  void updateEmotions() {
-    // Put the 3 brains in a new Array for easier accesability
-    ArrayList<AniBrain> b = new ArrayList<AniBrain>();
-    for (int i=0; i<totalBrains; i++) if (brains.get(i).state==1) b.add(brains.get(i));
+  void ani0() {
+    for (int i=0; i<t; i++) {
+      if (frameCount % 50 < 25) communication.commandArduino(i, 1, 255, 0, 0);
+      else communication.commandArduino(i, 1, 0, 0, 0);
+    }
+  }
 
-    // For each brain in the 3-network, look up the combined emotion of the other brain and combine that combined emotion with the emotion of the brain you're checking
-    // Store the new emotion in a variable first so the next calculations aren't messed up
-    int combEmo0 = results[b.get(1).emotion-1][b.get(2).emotion-1];
-    int newEmo0 = results[b.get(0).emotion-1][combEmo0-1];
+  void ani1(int m, int n) {
+    if (ani1bool) {
+      for (int i=0; i<t; i++) {
+        communication.commandArduino(i, 1, 0, 0, 0);
+      }
+      ani1bool = false;
+    }
+    for (int i=0; i<constrain(floor(map(m, 0, n, 0, t)), 0, t); i++) {
+      communication.commandArduino(i, 1, 255, 255, 255);
+    }
+  }
 
-    int combEmo1 = results[b.get(0).emotion-1][b.get(2).emotion-1];
-    int newEmo1 = results[b.get(1).emotion-1][combEmo1-1];
+  void ani2(int m, int n) {
+    float k = map(m, 0, n, 0, 1);
+    for (int i=0; i<t; i++) {
+      color c = network.brains.get(i).clr;
+      c = lerpColor(color(255, 255, 255), c, k);
+      communication.commandArduino(i, 1, int(red(c)), int(green(c)), int(blue(c)));
+    }
+  }
 
-    int combEmo2 = results[b.get(0).emotion-1][b.get(1).emotion-1];
-    int newEmo2 = results[b.get(2).emotion-1][combEmo2-1];
+  void ani3() {
+    for (int i=0; i<t; i++) {
+      if (i==1 || i==2 || i==3) communication.commandArduino(i, 1, (int)red(network.brains.get(i).clr), (int)green(network.brains.get(i).clr), (int)blue(network.brains.get(i).clr));
+      else communication.commandArduino(i, 2, 255, 255, 255);
+    }
+  }
 
-    // Set the new emotions
-    b.get(0).updateEmotion(newEmo0);
-    b.get(1).updateEmotion(newEmo1);
-    b.get(2).updateEmotion(newEmo2);
-    for (AniBrain bb : brains) bb.state=0;
+  void ani4() {
+    if (tmr<500) for (int i=0; i<t; i++) {
+      if (i==1 || i==2 || i==3) communication.commandArduino(i, 1, (int)red(network.brains.get(i).clr)/2, (int)green(network.brains.get(i).clr)/2, (int)blue(network.brains.get(i).clr)/2);
+      else communication.commandArduino(i, 2, 255, 255, 255);
+    }
+    if (tmr>500 && tmr<2000) for (int i=0; i<t; i++) {
+      float amp = random(1, 5);
+      if (i==1) communication.commandArduino(i, 1, int(red(network.brains.get(i).clr)/amp), int(green(network.brains.get(i).clr)/amp), int(blue(network.brains.get(i).clr)/amp));
+      if (i==2 || i==3) communication.commandArduino(i, 1, (int)red(network.brains.get(i).clr)/2, (int)green(network.brains.get(i).clr)/2, (int)blue(network.brains.get(i).clr)/2);
+      if (i==4 || i==5) communication.commandArduino(i, 2, 255, 255, 255);
+    }
+    if (tmr>2000 && tmr<3500) for (int i=0; i<t; i++) {
+      float amp = random(1, 5);
+      if (i==2) communication.commandArduino(i, 1, int(red(network.brains.get(i).clr)/amp), int(green(network.brains.get(i).clr)/amp), int(blue(network.brains.get(i).clr)/amp));
+      if (i==1 || i==3) communication.commandArduino(i, 1, (int)red(network.brains.get(i).clr)/2, (int)green(network.brains.get(i).clr)/2, (int)blue(network.brains.get(i).clr)/2);
+      if (i==4 || i==5) communication.commandArduino(i, 2, 255, 255, 255);
+    }
+    if (tmr>3500 && tmr<5000) for (int i=0; i<t; i++) {
+      float amp = random(1, 5);
+      if (i==3) communication.commandArduino(i, 1, int(red(network.brains.get(i).clr)/amp), int(green(network.brains.get(i).clr)/amp), int(blue(network.brains.get(i).clr)/amp));
+      if (i==2 || i==1) communication.commandArduino(i, 1, (int)red(network.brains.get(i).clr)/2, (int)green(network.brains.get(i).clr)/2, (int)blue(network.brains.get(i).clr)/2);
+      if (i==4 || i==5) communication.commandArduino(i, 2, 255, 255, 255);
+    }
+  }
+
+  void ani5(int m, int n) {
+    float k = map(m, 0, n, 0, 1);
+
+    for (int i=0; i<t; i++) {
+      color c = lerpColor(network.brains.get(i).clr, color(255, 255, 0), k);
+      if (i==1 || i==2 || i==3) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+      else communication.commandArduino(i, 2, 255, 255, 255);
+    }
+  }
+
+  void ani6(int m, int n) {
+    float k = map(m, 0, n, 0, 4);
+    if (k<1) {
+      color c = lerpColor(color(255, 0, 0), color(255, 255, 0), k);
+      for (int i=0; i<t; i++) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+    }
+    if (k>1 && k<2) {
+      color c = lerpColor(color(255, 255, 0), color(0, 0, 255), k-1);
+      for (int i=0; i<t; i++) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+    }
+    if (k>2 && k<3) {
+      color c = lerpColor(color(0, 0, 255), color(0, 255, 0), k-2);
+      for (int i=0; i<t; i++) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+    }
+    if (k>3 && k<4) {
+      color c = lerpColor(color(0, 255, 0), color(255, 0, 255), k-3);
+      for (int i=0; i<t; i++) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+    }
+  }
+
+  void ani7(int m, int n) {
+    float k = map(m, 0, n, 0, 1);
+    for (int i=0; i<t; i++) {
+      color c = network.brains.get(i).clr;
+      c = lerpColor(color(255, 255, 255), c, k);
+      communication.commandArduino(i, 1, int(red(c)), int(green(c)), int(blue(c)));
+    }
+  }
+
+  void ani8(int m, int n) {
+    float k = map(m, 0, n, 0, 1);
+    if (k<1) {
+      for (int i=0; i<t; i++) {
+        color c = network.brains.get(i).clr;
+        if ( i== 0 || i == 2 || i==4) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+        else communication.commandArduino(i, 2, 255, 255, 255);
+      }
+    }
+    if (k>1 && k<2) {
+      for (int i=0; i<t; i++) {
+        color c = network.brains.get(i).clr;
+        c = lerpColor(color(0, 0, 255), c, k);
+        communication.commandArduino(i, 1, int(red(c)), int(green(c)), int(blue(c)));
+      }
+    }
+    if (k>2 && k<3) {
+      color c = lerpColor(color(0, 0, 255), color(0, 255, 0), k-2);
+      for (int i=0; i<t; i++) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+    }
+    if (k>3 && k<4) {
+      color c = lerpColor(color(0, 255, 0), color(255, 0, 255), k-3);
+      for (int i=0; i<t; i++) communication.commandArduino(i, 1, (int)red(c), (int)green(c), (int)blue(c));
+    }
+  }
+
+  void reset() {
+    tmrRst = millis();
+  }
+
+  void finito() {
+    for (int i=0; i<t; i++) {
+      if (network.getTotalPoints()>1) communication.commandArduino(i, 1, 255, 0, 255);
+      if (network.getTotalPoints()<-1) communication.commandArduino(i, 1, 255, 0, 0);
+      if (network.getTotalPoints()>=-1 && network.getTotalPoints()<=1) communication.commandArduino(i, 1, 0, 0, 255);
+    }
   }
 }
