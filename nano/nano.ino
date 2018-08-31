@@ -219,7 +219,7 @@ void communication() {
   delay(10); //maybe try millis
 }
 void control() {
-  color_rgbstrip(values[1], values[2], values[3]);
+  color_rgbstrip(255,255,255);
   if (values[0] == 1) {
     
    color_strip2(values[1],values[2],values[3]);

@@ -33,7 +33,7 @@ class Network {
   void run() {
     if (state == 0) {
       send(1);
-animation.reset();
+      animation.reset();
       if (secs > (hint1.duration())) {
         hint1.stop();
         secsRst = floor(millis()/1000);
@@ -67,10 +67,10 @@ animation.reset();
     translate(width/2, height/2);
     background(0);
     textSize(50);
-    String str = "";
-    for (int i=0; i<900; i++)str+=round(random(0, 1));
-    fill(255, 30);
-    text(str, -width/2, -height/2, width, height);
+    //String str = "";
+    //for (int i=0; i<900; i++)str+=round(random(0, 1));
+    //fill(255, 30);
+    //text(str, -width/2, -height/2, width, height);
     strokeWeight(10);
     stroke(80);
     for (Brain b : brains) for (Brain o : brains) line(b.loc.x, b.loc.y, o.loc.x, o.loc.y);

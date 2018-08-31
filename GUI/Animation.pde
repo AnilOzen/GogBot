@@ -21,7 +21,7 @@ class Animation {
       if (tmr>51000) a1=false;
     }
 
-    if (sound.introBool && !a2) {
+    if (sound.introBool && !a2 && !a1) {
       reset();
       a2 = true;
     }

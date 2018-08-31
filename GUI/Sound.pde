@@ -43,9 +43,9 @@ void loadSoundFiles() { // Load all soundfiles. This is executed in setup().
   };
   transition12 = new SoundFile[]{new SoundFile(this, "transitions/1_2_negative.mp3"), new SoundFile(this, "transitions/1_2_neutral.mp3"), new SoundFile(this, "transitions/1_2_positive.mp3")};
   transition23 = new SoundFile[]{new SoundFile(this, "transitions/2_3_negative.mp3"), new SoundFile(this, "transitions/2_3_neutral.mp3"), new SoundFile(this, "transitions/2_3_positive.mp3")};
-  outroNeg = new SoundFile[]{new SoundFile(this, "outro/negative1.mp3"), new SoundFile(this, "outro/jp_silenced.mp3"),new SoundFile(this, "outro/negative2_silenced.mp3")};
+  outroNeg = new SoundFile[]{new SoundFile(this, "outro/negative1.mp3"), new SoundFile(this, "outro/jp_silenced.mp3"), new SoundFile(this, "outro/negative2_silenced.mp3")};
   outroNeu = new SoundFile(this, "outro/neutral.mp3");
-  outroPos = new SoundFile[]{new SoundFile(this, "outro/positive1.mp3"), new SoundFile(this, "outro/hannah_silenced.mp3"),new SoundFile(this, "outro/positive2_silenced.mp3")};
+  outroPos = new SoundFile[]{new SoundFile(this, "outro/positive1.mp3"), new SoundFile(this, "outro/hannah_silenced.mp3"), new SoundFile(this, "outro/positive2_silenced.mp3")};
 
   intro = new SoundFile(this, "intro/intro1.mp3");
   intro2 = new SoundFile(this, "intro/intro2.mp3");
@@ -128,15 +128,15 @@ class Sound {
         if (currentRound==4) {
           finished=true;
         }
-        
+
         if (network.prevScore-network.getTotalPoints()>0 && currentRound==2) transition12[0].play();
         if (network.prevScore-network.getTotalPoints()==0 && currentRound==2) transition12[1].play();
         if (network.prevScore-network.getTotalPoints()<0 && currentRound==2) transition12[2].play();
-        
+
         if (network.prevScore-network.getTotalPoints()>0 && currentRound==3) transition23[0].play();
         if (network.prevScore-network.getTotalPoints()==0 && currentRound==3) transition23[1].play();
         if (network.prevScore-network.getTotalPoints()<0 && currentRound==3) transition23[2].play();
-        
+
         if (network.getTotalPoints()<0 && currentRound==4) {
           outroNeg[0].play();
           outroNeg[1].play();
@@ -148,10 +148,10 @@ class Sound {
           outroPos[1].play();
           outroPos[2].play();
         }
-        
-        
+
+
         currentRound = min(currentRound, 3); // For testing
-        
+
         ambients[currentRound-2].stop();
         ambients[currentRound-1].amp(0.03);
         ambients[currentRound-1].play();
@@ -162,6 +162,7 @@ class Sound {
   void talk(int brainIndex, int emotion) {
     SoundFile s = (currentRound == 1) ? round1[emotion-1] : ((currentRound==2) ? round2[emotion-1][brainIndex] : round3[emotion-1][brainIndex]); // Get the correct soundfile
     s.play(); // Start playing the soundfile
-    amp.input(s); // Start analyzing the amplitude of the soundfile
+    SoundFile s2 = (currentRound == 1) ? round1[emotion-1] : ((currentRound==2) ? round2[emotion-1][brainIndex] : round3[emotion-1][brainIndex]); // Get the correct soundfile
+    amp.input(s2); // Start analyzing the amplitude of the soundfile
   }
 }
